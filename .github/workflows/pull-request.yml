@@ -11,5 +11,8 @@ jobs:
       - name: Installing dependencies
         run: make setup
 
+      - name: Activating the JDK
+        run: jabba use
+
       - name: Ensuring all tests and static analysis targets pass
         run: make fmtcheck vet test
