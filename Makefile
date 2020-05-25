@@ -111,7 +111,7 @@ ifeq (,$(wildcard ~/.jabba/jabba.sh))
 	@echo "==> Installing jabba..."
 	curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
 	@echo ""
-	@echo "Don't forget to: source $$JABBA_HOME/jabba.sh"
+	@echo "Don't forget to: source ~/.jabba/jabba.sh"
 	@echo ""
 endif
 
@@ -140,5 +140,5 @@ endif
 jabba:
 	@echo "==> This project uses jabba for selecting a JAVA version"
 	@echo "==> Before running this command, run:"
-	@echo "==> jabba use"
+	@echo "source ~/.jabba/jabba.sh && jabba use"
 
