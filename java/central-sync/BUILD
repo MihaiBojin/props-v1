@@ -8,7 +8,7 @@ assemble_maven(
     package = "{maven_packages}",
     project_name = "Props",
     project_description = "Props - Multi-layered properties and secrets management library",
-    project_url = "https://github.com/MihaiBojin/props",
+    project_url = "https://props.MihaiBojin.com",
     scm_url = "https://github.com/MihaiBojin/props.git",
     version_file = "VERSION",
     developers = contributors(),

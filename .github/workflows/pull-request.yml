@@ -12,12 +12,16 @@ jobs:
       - name: Installing dependencies
         run: make setup
 
-      - name: Run tests and static analysis targets
+      - name: Installing the JDK
         run: |
           echo
-          echo "Installing the correct JDK..."
+          echo "Installing the JDK..."
           source ~/.jabba/jabba.sh
           jabba install
+
+      - name: Run tests and static analysis targets
+        run: |
+          source ~/.jabba/jabba.sh
           jabba use
           echo
           echo "Running the tests..."

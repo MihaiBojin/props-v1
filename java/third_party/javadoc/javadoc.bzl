@@ -9,8 +9,6 @@ def _javadoc(ctx):
     # https://docs.oracle.com/en/java/javase/11/javadoc/javadoc-command.html#GUID-B0079316-8AA3-475B-8276-6A4095B5186A
     cmd = [
         "mkdir -p %s" % target_name,
-        "which javadoc",
-        "javadoc -v",
         "javadoc -d %s %s" % (target_name, " ".join(src_list)),
         "jar cvf %s %s/*" % (output_jar.path, target_name)
     ]
@@ -19,6 +17,7 @@ def _javadoc(ctx):
         inputs = ctx.files.srcs,
         outputs = [output_jar],
         command = "\n".join(cmd),
+        use_default_shell_env = True,
     )
 
     return [
@@ -33,3 +32,4 @@ javadoc = rule(
         "artifact_id": attr.string(),
     },
 )
+
