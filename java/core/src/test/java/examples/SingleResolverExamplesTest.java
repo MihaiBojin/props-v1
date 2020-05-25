@@ -101,7 +101,7 @@ public class SingleResolverExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to find a 'file.encoding' defined in the System Properties",
-        maybeValue.orElse(null),
-        equalTo("UTF-8"));
+        maybeValue.isPresent(),
+        equalTo(true));
   }
 }
