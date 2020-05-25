@@ -1,0 +1,15 @@
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Installing dependencies
+        run: make setup
+
+      - name: Ensuring all tests and static analysis targets pass
+        run: make fmtcheck vet test
