@@ -12,13 +12,13 @@ jobs:
       - name: Installing dependencies
         run: make setup
 
-      - name: Installing the correct JDK
+      - name: Run tests and static analysis targets
         run: |
+          echo
+          echo "Installing the correct JDK..."
           source ~/.jabba/jabba.sh
           jabba install
           jabba use
-
-      - name: Ensuring all tests and static analysis targets pass
-        run: |
-          java -version
+          echo
+          echo "Running the tests..."
           make fmtcheck vet test
