@@ -44,7 +44,7 @@ fmtcheck:
 vet:
 	@echo ""
 	@echo "==> Running fbinfer..."
-	$(INFER)/bin/infer run -- javac $(shell find ./java/core/src/main/java/ -name '*.java')
+	$(INFER)/bin/infer run -- javac $(shell find ./java/core/src/main/java/ -name '*.java' | grep -v module-info.java)
 
 .PHONY: generate-pom-version
 generate-pom-version:

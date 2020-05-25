@@ -4,6 +4,7 @@ on:
       - master
 jobs:
   tests:
+    name: Pull Request Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,10 +16,9 @@ jobs:
         run: |
           source ~/.jabba/jabba.sh
           jabba install
+          jabba use
 
       - name: Ensuring all tests and static analysis targets pass
         run: |
-          source ~/.jabba/jabba.sh
-          jabba use
           java -version
           make fmtcheck vet test
