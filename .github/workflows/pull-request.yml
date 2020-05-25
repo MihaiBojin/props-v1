@@ -15,7 +15,10 @@ jobs:
         run: |
           source ~/.jabba/jabba.sh
           jabba install
-          jabba use
 
       - name: Ensuring all tests and static analysis targets pass
-        run: make fmtcheck vet test
+        run: |
+          source ~/.jabba/jabba.sh
+          jabba use
+          java -version
+          make fmtcheck vet test
