@@ -14,5 +14,4 @@ javadoc(
     srcs = glob(["java/**/*.java"]),
     group_id = "com.mihaibojin.props",
     artifact_id = "props-core",
-    tags = ["no_test"],
 )
