@@ -16,6 +16,7 @@
 
 package com.mihaibojin.props.core;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.PropTypeConverter;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public interface Prop<T> extends PropTypeConverter<T> {
    *
    * @return a short, developer-friendly description
    */
+  @Nullable
   String description();
 
   /**

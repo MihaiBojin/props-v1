@@ -19,6 +19,7 @@ package com.mihaibojin.props.core;
 import static java.util.Objects.nonNull;
 import static java.util.logging.Level.FINE;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -63,7 +64,7 @@ public class RefactoredProp<T1, T2> {
    */
   public RefactoredProp(
       Props registry,
-      String resolverId,
+      @Nullable String resolverId,
       Prop<T1> prop1,
       Prop<T2> prop2,
       Function<T2, T1> converter) {

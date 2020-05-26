@@ -21,6 +21,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.logging.Level.SEVERE;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.PropTypeConverter;
 import com.mihaibojin.props.core.converters.StringConverter;
 import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
@@ -112,18 +113,19 @@ public class Props implements AutoCloseable {
    *
    * @throws BindException if attempting to bind a {@link Prop} for a key which was already bound to
    *     another object. This is to encourage efficiency and define a single object per key, keeping
-   *     memory usage low(er). Use the {@link #retrieve(String)} and {@link #retrieve(String,
-   *     Class)} methods to get a pre-existing instance.
+   *     memory usage low(er). Use the {@link #retrieveProp(String)} and {@link #retrieve(String)}
+   *     methods to get a pre-existing instance.
    * @throws IllegalArgumentException if the specified <code>resolverId</code> is not known to the
    *     registry.
    */
-  public <T, R extends Prop<T>> R bind(R prop, String resolverId) {
+  public <T, R extends Prop<T>> R bind(R prop, @Nullable String resolverId) {
     Prop<?> oldProp = boundProps.putIfAbsent(prop.key(), prop);
     if (nonNull(oldProp) && oldProp != prop) {
       throw new BindException(prop.key(), oldProp);
     }
 
-    if (nonNull(resolverId)) {
+    // NullAway does not recognize Objects.nonNull (https://github.com/uber/NullAway/issues/393)
+    if (resolverId != null) {
       // only register the prop with a resolver, if the id is non-null and valid
       validateResolver(resolverId);
       propIdToResolver.put(prop.key(), resolverId);
@@ -148,7 +150,8 @@ public class Props implements AutoCloseable {
    * Returns an existing (bound) {@link Prop} object, or <code>null</code> if one does not exist for
    * the specified key.
    */
-  public Prop<?> retrieve(String key) {
+  @Nullable
+  public Prop<?> retrieveProp(String key) {
     return boundProps.get(key);
   }
 
@@ -158,8 +161,10 @@ public class Props implements AutoCloseable {
    *
    * @throws ClassCastException if the property key is associated with a different type
    */
-  public <T, R extends Prop<T>> R retrieve(String key, Class<R> clz) {
-    return clz.cast(boundProps.get(key));
+  @Nullable
+  @SuppressWarnings("unchecked")
+  public <T, R extends Prop<T>> R retrieve(String key) {
+    return (R) boundProps.get(key);
   }
 
   /**
@@ -188,7 +193,7 @@ public class Props implements AutoCloseable {
   }
 
   /** Search all resolvers for a value. */
-  <T> Optional<T> resolveProp(Prop<T> prop, String resolverId) {
+  <T> Optional<T> resolveProp(Prop<T> prop, @Nullable String resolverId) {
     return resolveByKey(prop.key(), prop, resolverId);
   }
 
@@ -197,18 +202,22 @@ public class Props implements AutoCloseable {
    *
    * <p>If a <code>resolverId</code> is specified, only search the matching resolver.
    */
-  <T> Optional<T> resolveByKey(String key, PropTypeConverter<T> converter, String resolverId) {
+  <T> Optional<T> resolveByKey(
+      String key, PropTypeConverter<T> converter, @Nullable String resolverId) {
     if (!waitForInitialLoad()) {
       return Optional.empty();
     }
 
     if (nonNull(resolverId)) {
       // if the prop is bound to a single resolver, return it on the spot
-      return resolvers.get(resolverId).get(key).map(converter::decode);
+      return Optional.ofNullable(resolvers.get(resolverId))
+          .flatMap(resolver -> resolver.get(key).map(converter::decode));
     }
 
     for (String id : prioritizedResolvers) {
-      Optional<String> value = resolvers.get(id).get(key);
+      Optional<String> value =
+          Optional.ofNullable(resolvers.get(id)).flatMap(resolver -> resolver.get(key));
+
       if (value.isPresent()) {
         log.log(Level.FINER, format("%s resolved by %s", key, id));
 
@@ -377,11 +386,11 @@ public class Props implements AutoCloseable {
   public class Builder<T> {
     public final String key;
     public final PropTypeConverter<T> converter;
-    private T defaultValue;
-    private String description;
+    @Nullable private T defaultValue;
+    @Nullable private String description;
     private boolean isRequired;
     private boolean isSecret;
-    private String resolverId;
+    @Nullable private String resolverId;
 
     private Builder(String key, PropTypeConverter<T> converter) {
       this.key = key;
@@ -430,6 +439,7 @@ public class Props implements AutoCloseable {
       return bind(
           new AbstractProp<>(key, defaultValue, description, isRequired, isSecret) {
             @Override
+            @Nullable
             public T decode(String value) {
               return converter.decode(value);
             }

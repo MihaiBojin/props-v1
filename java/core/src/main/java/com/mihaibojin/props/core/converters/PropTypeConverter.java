@@ -16,6 +16,8 @@
 
 package com.mihaibojin.props.core.converters;
 
+import com.mihaibojin.props.core.annotations.Nullable;
+
 @FunctionalInterface
 public interface PropTypeConverter<T> {
   /**
@@ -23,6 +25,7 @@ public interface PropTypeConverter<T> {
    *
    * @return the value parsed as <code>T</code>
    */
+  @Nullable
   T decode(String value);
 
   /**

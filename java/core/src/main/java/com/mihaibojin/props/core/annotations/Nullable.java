@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package com.mihaibojin.props.core.converters;
+package com.mihaibojin.props.core.annotations;
 
-import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseDuration;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import com.mihaibojin.props.core.annotations.Nullable;
-import java.time.Duration;
-
-/** Converter that casts the inputted {@link String} to an {@link Duration} value. */
-public interface DurationConverter extends PropTypeConverter<Duration> {
-  @Override
-  @Nullable
-  default Duration decode(String value) {
-    return safeParseDuration(value);
-  }
-}
+/** The annotated element could be null. */
+@Documented
+@Retention(RetentionPolicy.CLASS)
+public @interface Nullable {}

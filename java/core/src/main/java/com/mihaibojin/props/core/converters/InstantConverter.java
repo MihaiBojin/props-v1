@@ -18,11 +18,13 @@ package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseInstant;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.time.Instant;
 
 /** Converter that casts the inputted {@link String} to an {@link Instant} value. */
 public interface InstantConverter extends PropTypeConverter<Instant> {
   @Override
+  @Nullable
   default Instant decode(String value) {
     return safeParseInstant(value);
   }

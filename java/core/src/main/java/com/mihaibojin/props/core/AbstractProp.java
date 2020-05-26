@@ -19,15 +19,16 @@ package com.mihaibojin.props.core;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.Optional;
 
 public abstract class AbstractProp<T> implements Prop<T> {
   public final String key;
-  private final T defaultValue;
-  private final String description;
+  @Nullable private final T defaultValue;
+  @Nullable private final String description;
   private final boolean isRequired;
   private final boolean isSecret;
-  private volatile T currentValue;
+  @Nullable private volatile T currentValue;
 
   /**
    * Constructs a new property class.
@@ -35,7 +36,11 @@ public abstract class AbstractProp<T> implements Prop<T> {
    * @throws IllegalStateException if the constructed object is in an invalid state
    */
   protected AbstractProp(
-      String key, T defaultValue, String description, boolean isRequired, boolean isSecret) {
+      String key,
+      @Nullable T defaultValue,
+      @Nullable String description,
+      boolean isRequired,
+      boolean isSecret) {
     this.key = key;
     this.defaultValue = defaultValue;
     if (isNull(key)) {
@@ -84,6 +89,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   }
 
   /** Retrieve this property's value. */
+  @Nullable
   T getValueInternal() {
     synchronized (this) {
       return currentValue;
@@ -113,6 +119,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   }
 
   @Override
+  @Nullable
   public String description() {
     return description;
   }

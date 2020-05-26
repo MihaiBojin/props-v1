@@ -90,6 +90,16 @@ maven_install(
             version = "1.6.2",
             testonly = True,
         ),
+        maven.artifact(
+            group = "com.uber.nullaway",
+            artifact = "nullaway",
+            version = "0.7.10",
+        ),
+        maven.artifact(
+            group = "com.google.guava",
+            artifact = "guava",
+            version = "22.0",
+        ),
     ],
     repositories = [
         "https://repo1.maven.org/maven2",

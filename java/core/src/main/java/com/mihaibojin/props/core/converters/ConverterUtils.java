@@ -18,6 +18,7 @@ package com.mihaibojin.props.core.converters;
 
 import static java.util.logging.Level.SEVERE;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.Duration;
@@ -43,6 +44,7 @@ class ConverterUtils {
    * <p>This methods logs a {@link java.util.logging.Level#SEVERE} event instead of throwing {@link
    * ParseException}s.
    */
+  @Nullable
   static Number safeParseNumber(String value) {
     try {
       return NumberFormat.getInstance().parse(value);
@@ -59,6 +61,7 @@ class ConverterUtils {
    * <p>This methods logs a {@link java.util.logging.Level#SEVERE} event instead of throwing {@link
    * IllegalArgumentException}s or {@link NullPointerException}s.
    */
+  @Nullable
   static ChronoUnit safeParseChronoUnit(String value) {
     try {
       return ChronoUnit.valueOf(value);
@@ -75,6 +78,7 @@ class ConverterUtils {
    * <p>This methods logs a {@link java.util.logging.Level#SEVERE} event instead of throwing {@link
    * DateTimeParseException}s.
    */
+  @Nullable
   static Duration safeParseDuration(String value) {
     try {
       return Duration.parse(value);
@@ -91,6 +95,7 @@ class ConverterUtils {
    * <p>This methods logs a {@link java.util.logging.Level#SEVERE} event instead of throwing {@link
    * DateTimeParseException}s.
    */
+  @Nullable
   static Instant safeParseInstant(String value) {
     try {
       return OffsetDateTime.parse(value).toInstant();
