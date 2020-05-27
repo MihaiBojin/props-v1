@@ -1,5 +1,5 @@
 # BEGIN https://github.com/bazelbuild/rules_jvm_external
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 RULES_JVM_EXTERNAL_TAG = "3.2"
 RULES_JVM_EXTERNAL_SHA = "82262ff4223c5fda6fb7ff8bd63db8131b51b413d26eb49e3131037e79e324af"
@@ -106,3 +106,13 @@ maven_install(
     ],
 )
 # END java dependencies
+
+# BEGIN checkstyle
+http_file(
+    name = "checkstyle",
+    urls = [
+        "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.32/checkstyle-8.32-all.jar",
+    ],
+    sha256 = "5a46440e980a378d73e76c50ca554cd0c38480ac33040adf16d131d7e16d50a1",
+)
+# END checkstyle

@@ -29,3 +29,24 @@ java_plugin(
         artifact("com.google.guava:guava"),
     ],
 )
+
+genrule(
+    name = "checkstyle",
+    srcs = glob(["java/**/*.java"]),
+    tools = [
+        "@checkstyle//file",
+        "//java/third_party/checkstyle:checkstyle.xml",
+        "//java/third_party/checkstyle:checkstyle-suppressions.xml",
+        "//java/third_party/checkstyle:checkstyle-xpath-suppressions.xml",
+        "//java/third_party/checkstyle:license-header.txt",
+    ],
+    cmd = " ".join([
+        "java -classpath $(location @checkstyle//file)",
+        "com.puppycrawl.tools.checkstyle.Main",
+        "-c $(location //java/third_party/checkstyle:checkstyle.xml)",
+        "--",
+        "$(SRCS)",
+        "| tee \"$@\"",
+    ]),
+    outs = ["checkstyle.log"],
+)
