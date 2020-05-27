@@ -141,7 +141,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
 
   @Override
   public String toString() {
-    if (isNull(currentValue)) {
+    if (currentValue == null) {
       return format("Prop{%s=null}", key);
     }
 
