@@ -90,13 +90,6 @@ git-hooks:
 
 .PHONY: setup
 setup: git-hooks
-ifeq (, $(shell which buildifier))
-	@echo ""
-	@echo "==> Installing buildifier..."
-	go get github.com/bazelbuild/buildtools/buildifier
-# TODO(mihaibojin): refactor to Bazel version: https://github.com/bazelbuild/buildtools/blob/master/buildifier/README.md#setup-and-usage-via-bazel
-endif
-
 ifeq (, $(shell which bazelisk))
 
 ifeq (, $(shell which go))
@@ -111,6 +104,13 @@ ifeq (, $(shell which bazelisk))
 	$(error "Please add '$(shell go env GOPATH)/bin' to your current PATH")
 endif
 
+endif
+
+ifeq (, $(shell which buildifier))
+	@echo ""
+	@echo "==> Installing buildifier..."
+	go get github.com/bazelbuild/buildtools/buildifier
+# TODO(mihaibojin): refactor to Bazel version: https://github.com/bazelbuild/buildtools/blob/master/buildifier/README.md#setup-and-usage-via-bazel
 endif
 
 ifeq (,$(wildcard ~/.jabba/jabba.sh))
@@ -137,6 +137,7 @@ endif
 else
 # Linux
 ifeq (, $(wildcard $(INFER)/bin/infer))
+	mkdir -p lib
 	curl -sSfL -o $(INFER).tar.xz "https://github.com/facebook/infer/releases/download/v$(INFER_VERSION)/infer-$(OS_NAME)-v$(INFER_VERSION).tar.xz"
 	tar -C lib/ -xJf $(INFER).tar.xz
 endif
