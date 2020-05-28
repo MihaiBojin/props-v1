@@ -35,9 +35,11 @@ You can build the project with: `make build`.
 And you can run the tests with `make test`.
 
 We use the [Google JAVA Formatter](https://github.com/google/google-java-format) to keep the code 
-consistent.  You can use `make fmt` to format the code and `make fmtcheck` to verify that 
-all code is properly formatted.  This target runs in the pre-commit git hook which is automatically 
-installed when you run `make setup` or can be individually installed with `make git-hooks`. 
+consistent.  You can run `make fmtcheck` to verify that all code is properly formatted.  
+This target runs in the pre-commit git hook which is automatically installed when you run 
+`make setup` or can be individually installed with `make git-hooks`. 
+
+All Bazel build files are formatted with [buildifier](https://github.com/bazelbuild/buildtools/buildifier).
 
 
 # Contributing

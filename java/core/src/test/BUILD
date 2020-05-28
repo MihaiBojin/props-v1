@@ -6,7 +6,6 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 # For more information, see https://github.com/junit-team/junit5-samples/tree/master/junit5-jupiter-starter-bazel
 load("//java/third_party/junit5:junit5.bzl", "java_junit5_test")
 
-
 java_junit5_test(
     name = "AllTests",
     srcs = glob(["**/*.java"]),
@@ -14,8 +13,8 @@ java_junit5_test(
     test_package = "com.mihaibojin",
     deps = [
         "//java/core/src/main:props-core",
-        "//java/third_party/hamcrest:hamcrest",
-        "//java/third_party/mockito:mockito",
+        "//java/third_party/hamcrest",
+        "//java/third_party/mockito",
     ],
 )
 
@@ -26,7 +25,7 @@ java_junit5_test(
     test_package = "examples",
     deps = [
         "//java/core/src/main:props-core",
-        "//java/third_party/hamcrest:hamcrest",
-        "//java/third_party/mockito:mockito",
+        "//java/third_party/hamcrest",
+        "//java/third_party/mockito",
     ],
 )

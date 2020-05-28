@@ -116,3 +116,11 @@ http_file(
     sha256 = "5a46440e980a378d73e76c50ca554cd0c38480ac33040adf16d131d7e16d50a1",
 )
 # END checkstyle
+
+# BEGIN google-java-format
+load("//java/third_party/google-java-format:workspace.bzl", "google_java_format_deps")
+google_java_format_deps(
+    version="1.7",
+    sha256="0894ee02019ee8b4acd6df09fb50bac472e7199e1a5f041f8da58d08730694aa",
+)
+# END google-java-format
