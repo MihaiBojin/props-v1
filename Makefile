@@ -41,9 +41,10 @@ fmtcheck:
 	@echo "==> Ensuring all the code is properly formatted..."
 	bazelisk build //java/core/src/main:google-java-format
 
-	@echo ""
-	@echo "==> Ensuring all Bazel build files are properly formatted..."
-	buildifier --lint=warn $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
+#	TODO(mihaibojin): Re-enable once the segfault is fixed
+#	@echo ""
+#	@echo "==> Ensuring all Bazel build files are properly formatted..."
+#	buildifier --lint=warn $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
 
 .PHONY: vet
 vet:

@@ -10,7 +10,7 @@ def _javadoc(ctx):
     cmd = [
         "mkdir -p %s" % target_name,
         "javadoc -d %s %s" % (target_name, " ".join(src_list)),
-        "jar cvf %s %s/*" % (output_jar.path, target_name)
+        "jar cvf %s %s/*" % (output_jar.path, target_name),
     ]
 
     ctx.actions.run_shell(
@@ -27,9 +27,8 @@ def _javadoc(ctx):
 javadoc = rule(
     implementation = _javadoc,
     attrs = {
-        "srcs" : attr.label_list(allow_files = True),
+        "srcs": attr.label_list(allow_files = True),
         "group_id": attr.string(),
         "artifact_id": attr.string(),
     },
 )
-

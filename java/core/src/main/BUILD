@@ -56,6 +56,7 @@ genrule(
 )
 
 load("//java/third_party/google-java-format:google-java-format.bzl", "java_format")
+
 java_format(
     name = "google-java-format",
     srcs = glob(["java/**/*.java"]),

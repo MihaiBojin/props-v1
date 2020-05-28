@@ -1,4 +1,4 @@
-def java_format(name, srcs, dry_run=False, **kwargs):
+def java_format(name, srcs, dry_run = False, **kwargs):
     native.genrule(
         name = name,
         srcs = srcs,
@@ -17,9 +17,9 @@ def java_format(name, srcs, dry_run=False, **kwargs):
             "| tee \"$@\"",
         ]),
         outs = [
-            name + ".log"
+            name + ".log",
         ],
-        **kwargs,
+        **kwargs
     )
 
 # TODO(mihaibojin): refactor like https://github.com/bazelbuild/buildtools/blob/master/buildifier/def.bzl

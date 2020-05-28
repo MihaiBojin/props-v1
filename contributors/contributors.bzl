@@ -7,5 +7,5 @@ def contributors():
     """
 
     return {
-      "1": ["name=Mihai Bojin", "email=mihai.bojin@gmail.com"]
+        "1": ["name=Mihai Bojin", "email=mihai.bojin@gmail.com"],
     }
