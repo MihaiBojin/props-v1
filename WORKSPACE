@@ -37,8 +37,8 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "graknlabs_bazel_distribution",
-    commit = "7e0ebb3db1f92d76f38c73b118ed1dde9ec32918",
     remote = "https://github.com/MihaiBojin/bazel-distribution",
+    commit = "7e0ebb3db1f92d76f38c73b118ed1dde9ec32918",
 )
 # END bazel distribution
 
@@ -144,3 +144,15 @@ google_java_format_deps(
     version = "1.7",
 )
 # END google-java-format
+
+#local_repository(
+#    name = "com_github_mihaibojin_bazel_java_rules",
+#    path = "/Users/mihaibojin/git/bazel_java_rules",
+#)
+git_repository(
+    name = "com_github_mihaibojin_bazel_java_rules",
+    remote = "https://github.com/MihaiBojin/bazel_java_rules",
+    commit = "8b133bf904776e3d40fb6a49000ddd7e134880c8",
+)
+load("@com_github_mihaibojin_bazel_java_rules//google-java-format:workspace.bzl", "google_java_format_workspace")
+google_java_format_workspace()

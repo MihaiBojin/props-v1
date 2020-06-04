@@ -33,13 +33,16 @@ fmt:
 	@echo ""
 	@echo "==> Formatting Bazel build files..."
 	buildifier $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
-# TODO(mihaibojin): re-add google-java-format
+
+	@echo ""
+	@echo "==> Formatting JAVA files..."
+	bazelisk run //:google-java-format
 
 .PHONY: fmtcheck
 fmtcheck:
 	@echo ""
-	@echo "==> Ensuring all the code is properly formatted..."
-	bazelisk build //java/core/src/main:google-java-format
+	@echo "==> Ensuring tht the JAVA code is properly formatted..."
+	bazelisk build //:google-java-format-check
 
 #	TODO(mihaibojin): Re-enable once the segfault is fixed
 #	@echo ""
