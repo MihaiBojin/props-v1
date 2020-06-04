@@ -136,15 +136,6 @@ http_file(
 )
 # END checkstyle
 
-# BEGIN google-java-format
-load("//java/third_party/google-java-format:workspace.bzl", "google_java_format_deps")
-
-google_java_format_deps(
-    sha256 = "0894ee02019ee8b4acd6df09fb50bac472e7199e1a5f041f8da58d08730694aa",
-    version = "1.7",
-)
-# END google-java-format
-
 #local_repository(
 #    name = "com_github_mihaibojin_bazel_java_rules",
 #    path = "/Users/mihaibojin/git/bazel_java_rules",
