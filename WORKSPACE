@@ -15,7 +15,7 @@ http_archive(
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 # END https://github.com/bazelbuild/rules_jvm_external
 
-# START bazel_skylib
+# START https://github.com/bazelbuild/bazel-skylib
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -30,7 +30,7 @@ http_archive(
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
-# END bazel_skylib
+# END https://github.com/bazelbuild/bazel-skylib
 
 # BEGIN bazel distribution
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
@@ -126,24 +126,36 @@ maven_install(
 )
 # END java dependencies
 
-# BEGIN checkstyle
+## BEGIN checkstyle
 http_file(
-    name = "checkstyle",
+    name = "checkstylejar",
     sha256 = "5a46440e980a378d73e76c50ca554cd0c38480ac33040adf16d131d7e16d50a1",
     urls = [
         "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.32/checkstyle-8.32-all.jar",
     ],
 )
-# END checkstyle
+## END checkstyle
 
-#local_repository(
-#    name = "com_github_mihaibojin_bazel_java_rules",
-#    path = "/Users/mihaibojin/git/bazel_java_rules",
-#)
-git_repository(
+local_repository(
     name = "com_github_mihaibojin_bazel_java_rules",
-    remote = "https://github.com/MihaiBojin/bazel_java_rules",
-    commit = "8b133bf904776e3d40fb6a49000ddd7e134880c8",
+    path = "/Users/mihaibojin/git/bazel_java_rules",
 )
+#git_repository(
+#    name = "com_github_mihaibojin_bazel_java_rules",
+#    remote = "https://github.com/MihaiBojin/bazel_java_rules",
+#    commit = "8b133bf904776e3d40fb6a49000ddd7e134880c8",
+#)
 load("@com_github_mihaibojin_bazel_java_rules//google-java-format:workspace.bzl", "google_java_format_workspace")
 google_java_format_workspace()
+
+load("@com_github_mihaibojin_bazel_java_rules//checkstyle:workspace.bzl", "checkstyle_workspace")
+checkstyle_workspace()
+
+load("@com_github_mihaibojin_bazel_java_rules//nullaway:workspace.bzl", "nullaway_workspace")
+nullaway_workspace()
+
+load("@com_github_mihaibojin_bazel_java_rules//junit5:workspace.bzl", "junit5_workspace")
+junit5_workspace()
+
+load("@com_github_mihaibojin_bazel_java_rules//errorprone:workspace.bzl", "errorprone_workspace")
+errorprone_workspace()

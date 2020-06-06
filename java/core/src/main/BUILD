@@ -1,4 +1,3 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@rules_java//java:defs.bzl", "java_library")
 
 java_library(
@@ -17,34 +16,9 @@ java_library(
     ],
 )
 
-java_plugin(
-    name = "nullaway",
-    deps = [
-        artifact("com.uber.nullaway:nullaway"),
-        artifact("com.google.guava:guava"),
-    ],
-)
+load("@com_github_mihaibojin_bazel_java_rules//nullaway:rules.bzl", "nullaway_plugin")
 
-genrule(
-    name = "checkstyle",
-    srcs = glob(["java/**/*.java"]),
-    outs = ["checkstyle.log"],
-    cmd = " ".join([
-        "java -classpath $(location @checkstyle//file)",
-        "com.puppycrawl.tools.checkstyle.Main",
-        "-c $(location //java/third_party/checkstyle:checkstyle.xml)",
-        "--",
-        "$(SRCS)",
-        "| tee \"$@\"",
-    ]),
-    tools = [
-        "//java/third_party/checkstyle:checkstyle.xml",
-        "//java/third_party/checkstyle:checkstyle-suppressions.xml",
-        "//java/third_party/checkstyle:checkstyle-xpath-suppressions.xml",
-        "//java/third_party/checkstyle:license-header.txt",
-        "@checkstyle//file",
-    ],
-)
+nullaway_plugin(name = "nullaway")
 
 load("@graknlabs_bazel_distribution//maven/templates:rules.bzl", "javadoc")
 

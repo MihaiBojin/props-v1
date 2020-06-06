@@ -52,9 +52,12 @@ fmtcheck:
 .PHONY: vet
 vet:
 	@echo ""
+	@echo "==> Running Checkstyle..."
+	bazelisk build //java:checkstyle
+
+	@echo ""
 	@echo "==> Running fbinfer..."
 	$(INFER)/bin/infer run -- javac $(shell find ./java/core/src/main/java/ -name '*.java')
-# TODO: add checkstyle, nullaway
 
 .PHONY: generate-pom-version
 generate-pom-version:
@@ -113,7 +116,6 @@ ifeq (, $(shell which buildifier))
 	@echo ""
 	@echo "==> Installing buildifier..."
 	go get github.com/bazelbuild/buildtools/buildifier
-# TODO(mihaibojin): refactor to Bazel version: https://github.com/bazelbuild/buildtools/blob/master/buildifier/README.md#setup-and-usage-via-bazel
 endif
 
 ifeq (,$(wildcard ~/.jabba/jabba.sh))
