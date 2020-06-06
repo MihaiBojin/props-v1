@@ -15,8 +15,6 @@ junit5_test(
     test_package = "com.mihaibojin",
     deps = [
         "//java/core/src/main:props-core",
-        "//java/third_party/hamcrest",
-        "//java/third_party/mockito",
     ],
 )
 
@@ -27,7 +25,5 @@ junit5_test(
     test_package = "examples",
     deps = [
         "//java/core/src/main:props-core",
-        "//java/third_party/hamcrest",
-        "//java/third_party/mockito",
     ],
 )
