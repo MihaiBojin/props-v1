@@ -53,7 +53,7 @@ fmtcheck:
 vet:
 	@echo ""
 	@echo "==> Running Checkstyle..."
-	bazelisk build //java:checkstyle
+	bazelisk build //java/core/src/main:checkstyle
 
 	@echo ""
 	@echo "==> Running fbinfer..."

@@ -42,14 +42,14 @@ git_repository(
 )
 # END bazel distribution
 
-#local_repository(
-#    name = "com_github_mihaibojin_bazel_java_rules",
-#    path = "/Users/mihaibojin/git/bazel_java_rules",
-#)
+local_repository(
+    name = "com_github_mihaibojin_bazel_java_rules",
+    path = "/Users/mihaibojin/git/bazel_java_ruless",
+)
 git_repository(
     name = "com_github_mihaibojin_bazel_java_rules",
     remote = "https://github.com/MihaiBojin/bazel_java_rules",
-    commit = "514e244e7fc3bcca4ad2b14334ea39c496f710a3",
+    commit = "ff9a52cf3d3cb643166c80168131d3078e449636",
 )
 load("@com_github_mihaibojin_bazel_java_rules//google-java-format:workspace.bzl", "google_java_format_jar")
 google_java_format_jar()
