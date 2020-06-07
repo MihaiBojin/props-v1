@@ -1,4 +1,5 @@
 load("@rules_java//java:defs.bzl", "java_library")
+
 java_library(
     name = "props-core",
     srcs = glob(["java/**/*.java"]),
@@ -16,15 +17,18 @@ java_library(
 )
 
 load("@com_github_mihaibojin_bazel_java_rules//nullaway:rules.bzl", "nullaway_plugin")
+
 nullaway_plugin(name = "nullaway")
 
 load("@graknlabs_bazel_distribution//maven/templates:rules.bzl", "javadoc")
+
 javadoc(
     name = "props-javadoc",
     target = ":props-core",
 )
 
 load("@com_github_mihaibojin_bazel_java_rules//checkstyle:rules.bzl", "checkstyle")
+
 checkstyle(
     name = "checkstyle",
     srcs = glob(["java/**/*.java"]),

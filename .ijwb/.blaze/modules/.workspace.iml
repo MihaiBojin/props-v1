@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/benchmark/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../.." />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-genfiles" />

@@ -32,7 +32,7 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 bazel_skylib_workspace()
 # END https://github.com/bazelbuild/bazel-skylib
 
-# BEGIN bazel distribution
+# BEGIN https://github.com/graknlabs/bazel-distribution
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
@@ -40,8 +40,9 @@ git_repository(
     remote = "https://github.com/MihaiBojin/bazel-distribution",
     commit = "7e0ebb3db1f92d76f38c73b118ed1dde9ec32918",
 )
-# END bazel distribution
+# END https://github.com/graknlabs/bazel-distribution
 
+# BEGIN https://github.com/MihaiBojin/bazel_java_rules
 local_repository(
     name = "com_github_mihaibojin_bazel_java_rules",
     path = "/Users/mihaibojin/git/bazel_java_ruless",
@@ -74,3 +75,20 @@ maven_install(
         "https://repo1.maven.org/maven2",
     ],
 )
+# END https://github.com/MihaiBojin/bazel_java_rules
+
+# BEGIN https://github.com/buchgr/rules_jmh
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+  name = "rules_jmh",
+  strip_prefix = "buchgr-rules_jmh-6ccf8d7",
+  url = "https://github.com/buchgr/rules_jmh/zipball/6ccf8d7b270083982e5c143935704b9f3f18b256",
+  type = "zip",
+  sha256 = "dbb7d7e5ec6e932eddd41b910691231ffd7b428dff1ef9a24e4a9a59c1a1762d",
+)
+
+load("@rules_jmh//:deps.bzl", "rules_jmh_deps")
+rules_jmh_deps()
+load("@rules_jmh//:defs.bzl", "rules_jmh_maven_deps")
+rules_jmh_maven_deps()
+# END https://github.com/buchgr/rules_jmh

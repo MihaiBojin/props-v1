@@ -49,6 +49,12 @@ fmtcheck:
 #	@echo "==> Ensuring all Bazel build files are properly formatted..."
 #	buildifier --lint=warn $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
 
+.PHONY: benchmark
+benchmark:
+	@echo ""
+	@echo "==> Running benchmarks..."
+	bazelisk build //java/core/src/benchmark/java:jmh
+
 .PHONY: vet
 vet:
 	@echo ""
