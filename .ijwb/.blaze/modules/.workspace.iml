@@ -8,11 +8,10 @@
   <component name="NewModuleRootManager">
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../..">
-      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/benchmark/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/main/java/com" isTestSource="false" packagePrefix="com" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/java/examples" isTestSource="true" packagePrefix="examples" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../java/core/src/test/java/com" isTestSource="true" packagePrefix="com" />
       <excludeFolder url="file://$MODULE_DIR$/../.." />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-genfiles" />
@@ -20,10 +19,17 @@
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-props" />
       <excludeFolder url="file://$MODULE_DIR$/../../../bazel-testlogs" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="AdoptOpenJDK-11.0.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="hamcrest-library-2.2_727b127e" level="project" />
     <orderEntry type="library" name="hamcrest-2.2_360d6a90" level="project" />
     <orderEntry type="library" name="junit-jupiter-api-5.6.2_d6a3e5c4" level="project" />
+    <orderEntry type="library" name="hamcrest-core-2.2_fc60002a" level="project" />
+    <orderEntry type="library" name="jmh-core-1.21_f1a187aa" level="project" />
+    <orderEntry type="library" name="junit-jupiter-params-5.6.2_20a373c0" level="project" />
+    <orderEntry type="library" name="junit-platform-launcher-1.6.2_ecde9e94" level="project" />
+    <orderEntry type="library" name="junit-vintage-engine-5.6.2_7d787d6a" level="project" />
+    <orderEntry type="library" name="junit-jupiter-engine-5.6.2_1e3f77c" level="project" />
     <orderEntry type="library" name="mockito-core-3.3.3_dd77f65b" level="project" />
   </component>
 </module>

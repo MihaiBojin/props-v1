@@ -53,7 +53,7 @@ fmtcheck:
 benchmark:
 	@echo ""
 	@echo "==> Running benchmarks..."
-	bazelisk build //java/core/src/benchmark/java:jmh
+	bazelisk run //java/benchmark/src/main:jmh
 
 .PHONY: vet
 vet:
