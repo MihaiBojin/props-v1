@@ -17,6 +17,11 @@ While `props` is currently implemented in JAVA, additional languages are planned
 - Ability to specify the order in which sources are queried for values
 
 
+# Performance
+
+While `props` is quite fast, it was not built for low-latency applications.
+You can read more about this topic on the [benchmark results page](java/benchmark/README.md). 
+
 # Contributing to the project
 
 Please see the [contributor guide](./CONTRIBUTING.md).

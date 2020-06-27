@@ -16,16 +16,25 @@
 
 package benchmark;
 
-import static java.lang.String.format;
-
+import com.mihaibojin.props.core.Prop;
 import com.mihaibojin.props.core.Props;
-import com.mihaibojin.props.core.converters.StringListConverter;
+import com.mihaibojin.props.core.converters.LongConverter;
+import com.mihaibojin.props.core.converters.LongListConverter;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.EnvResolver;
+import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.SystemPropertyResolver;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -33,51 +42,121 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 public class GenericBenchmarks {
+  public static final int PROP_COUNT = 3334;
 
-  // @Setup
-
-  /** Initialize the {@link Props} registry */
+  /** Initialize the {@link Props} registry. */
   @State(Scope.Benchmark)
   public static class PropsState {
-    final Props props =
-        Props.factory()
-            .withResolver(new SystemPropertyResolver())
-            .withResolver(new EnvResolver())
-            .withResolver(new ClasspathPropertyFileResolver("/benchmark.properties"))
-            .build();
-  }
+    Props props;
+    File propFile;
+    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    List<Prop<String>> stringProps = new ArrayList<>(50);
+    List<Prop<Long>> longProps = new ArrayList<>(50);
+    List<Prop<List<Long>>> longListProps = new ArrayList<>(50);
 
-  /** Loads a String {@link com.mihaibojin.props.core.Prop}. */
-  @Benchmark
-  @BenchmarkMode(Mode.Throughput)
-  @OutputTimeUnit(TimeUnit.SECONDS)
-  @Fork(value = 1, warmups = 1)
-  public void loadStringProp(PropsState state, Blackhole blackhole) {
-    try (state.props) {
-      Optional<String> value = state.props.prop("a.string").readOnce();
-      if (value.isEmpty() || !Objects.equals(value.get(), "one")) {
-        throw new AssertionError(format("Expected %s, got %s", "one", value.orElse(null)));
+    /** Initialize the benchmark. */
+    @Setup
+    public void setup() {
+      try {
+        propFile = File.createTempFile("jmh", "properties");
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
+      generateRandomProperties(propFile, PROP_COUNT);
+
+      // schedule property updates each second
+      executor.scheduleAtFixedRate(
+          () -> generateRandomProperties(propFile, PROP_COUNT), 0, 1, TimeUnit.SECONDS);
+
+      // initialize the props object
+      props =
+          Props.factory()
+              .withResolver(new SystemPropertyResolver())
+              .withResolver(new EnvResolver())
+              .withResolver(new ClasspathPropertyFileResolver("/benchmark.properties"))
+              .withResolver(new PropertyFileResolver(propFile.toPath()))
+              .build();
+
+      initializeProps();
+    }
+
+    /** Helper method for generating pseudo-random properties. */
+    public static Properties generateRandomProperties(File file, int count) {
+      Properties properties = new Properties();
+      long baseValue = Instant.now().toEpochMilli();
+
+      // generate String properties
+      for (int i = 0; i < count; i++) {
+        properties.setProperty("string." + i, baseValue + "i");
+      }
+
+      // generate Long properties
+      for (int i = 0; i < count; i++) {
+        properties.setProperty("long." + i, String.valueOf(baseValue + i));
+      }
+
+      // generate List<Double> properties
+      for (int i = 0; i < count; i++) {
+        String val = String.valueOf(baseValue + i);
+        properties.setProperty("longlist." + i, String.join(",", val, val, val, val, val));
+      }
+
+      try (OutputStream fos = new FileOutputStream(file)) {
+        properties.store(fos, null);
+
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+      return properties;
+    }
+
+    /** Initialize all property types. */
+    public void initializeProps() {
+      for (int i = 0; i < PROP_COUNT; i++) {
+        stringProps.add(props.prop("string." + i).isRequired(true).build());
+      }
+      for (int i = 0; i < PROP_COUNT; i++) {
+        longProps.add(props.prop("long." + i, new LongConverter() {}).isRequired(true).build());
+      }
+      for (int i = 0; i < PROP_COUNT; i++) {
+        longListProps.add(
+            props.prop("longlist." + i, new LongListConverter() {}).isRequired(true).build());
+      }
+    }
+
+    @TearDown
+    public void teardown() {
+      executor.shutdownNow();
+      props.close();
     }
   }
 
   /** Loads a String {@link com.mihaibojin.props.core.Prop}. */
   @Benchmark
-  @BenchmarkMode(Mode.Throughput)
-  @OutputTimeUnit(TimeUnit.SECONDS)
+  @BenchmarkMode(Mode.SampleTime)
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   @Fork(value = 1, warmups = 1)
-  public void loadListStringProp(PropsState state, Blackhole blackhole) {
-    try (state.props) {
-      Optional<List<String>> value =
-          state.props.prop("a.string.list", new StringListConverter() {}).readOnce();
-      if (value.isEmpty() || !Objects.equals(value.get(), List.of("one", "two", "three"))) {
-        throw new AssertionError(
-            format("Expected %s, got %s", "one,two,three", value.orElse(null)));
-      }
-    }
+  public void readPropsUpdatedEachSecond(PropsState state, Blackhole blackhole) {
+    state.stringProps.stream()
+        .map(Prop::value)
+        .filter(Optional::isPresent)
+        .forEach(blackhole::consume);
+
+    state.longProps.stream()
+        .map(Prop::value)
+        .filter(Optional::isPresent)
+        .forEach(blackhole::consume);
+
+    state.longListProps.stream()
+        .map(Prop::value)
+        .filter(Optional::isPresent)
+        .forEach(blackhole::consume);
   }
 }
