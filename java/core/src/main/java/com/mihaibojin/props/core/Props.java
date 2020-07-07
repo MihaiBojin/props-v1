@@ -336,6 +336,7 @@ public class Props implements AutoCloseable {
     private final LinkedHashMap<String, Resolver> resolvers = new LinkedHashMap<>();
     private Duration refreshInterval = Duration.ofSeconds(30);
     private Duration shutdownGracePeriod = Duration.ofSeconds(30);
+    private boolean shouldRegisterShutdownHook = true;
 
     private Factory() {}
 
@@ -369,6 +370,22 @@ public class Props implements AutoCloseable {
     }
 
     /**
+     * Specifies if a shutdown hook which terminates the executor should be automatically registered
+     * by calling {@link Runtime#addShutdownHook(Thread)}.
+     *
+     * @param shouldRegister true (default) if a shutdown hook should be registered
+     */
+    public Factory registerShutdownHook(boolean shouldRegister) {
+      shouldRegisterShutdownHook = shouldRegister;
+      return this;
+    }
+
+    /** Registers a shutdown hook. */
+    void registerShutdownHook(Props props) {
+      Runtime.getRuntime().addShutdownHook(new Thread(props::close));
+    }
+
+    /**
      * Creates the {@link Props} object.
      *
      * @throws IllegalStateException if the method is called without registering any {@link
@@ -378,7 +395,14 @@ public class Props implements AutoCloseable {
       if (resolvers.isEmpty()) {
         throw new IllegalStateException("Cannot initialize Props without any Resolvers");
       }
-      return new Props(resolvers, refreshInterval, shutdownGracePeriod);
+
+      final Props props = new Props(resolvers, refreshInterval, shutdownGracePeriod);
+
+      if (shouldRegisterShutdownHook) {
+        registerShutdownHook(props);
+      }
+
+      return props;
     }
   }
 
