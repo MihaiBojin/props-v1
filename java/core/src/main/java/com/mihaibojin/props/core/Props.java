@@ -73,18 +73,18 @@ public class Props implements AutoCloseable {
     this.refreshInterval = refreshInterval;
     this.shutdownGracePeriod = shutdownGracePeriod;
 
-    // ensure the non-auto-update resolvers have their values loaded
+    // ensure all resolvers (including the one which cannot refresh) have their values loaded
     CompletableFuture.runAsync(
         () -> {
           this.resolvers.entrySet().parallelStream().forEach(Props::safeReload);
           latch.countDown();
-        });
+        },
+        executor);
 
-    // and schedule the update-able ones to run periodically
-    // TODO: this can be risky if the Default ForkJoinPool is busy; refactor to use own executor
+    // and schedule a period refresh operation
     executor.scheduleAtFixedRate(
         () -> refreshResolvers(this.resolvers),
-        0,
+        refreshInterval.toMillis(),
         refreshInterval.toMillis(),
         TimeUnit.MILLISECONDS);
   }
