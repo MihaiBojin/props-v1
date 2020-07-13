@@ -16,6 +16,8 @@
 
 package com.mihaibojin.props.core.resolvers;
 
+import static java.util.logging.Level.SEVERE;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,17 +25,24 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ResolverUtils {
   private static final Logger log = Logger.getLogger(ResolverUtils.class.getName());
+  private static final Pattern configLinePattern =
+      Pattern.compile(
+          "^(?<type>[a-z]+)(?:=(?<path>[^,]+)(?:,(?<reload>(true|false)))?)?$",
+          Pattern.CASE_INSENSITIVE);
 
   /**
    * Loads a {@link Properties} object from the passed {@link InputStream} and returns a {@link Map}
@@ -99,34 +108,45 @@ public class ResolverUtils {
   }
 
   /**
-   * Read a configuration file that specifies multiple resolvers.
+   * Reads all lines from an {@link InputStream} that specifies multiple resolver configurations.
    *
-   * @throws IOException if the input stream cannot be read
+   * @return a list of {@link Resolver}s
    */
-  public static Map<String, String> readResolverConfig(InputStream stream) throws IOException {
+  public static List<Resolver> readResolverConfig(InputStream stream) {
     try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-      // reader.lines().forEach(line -> );
+      return reader.lines().map(ResolverUtils::readConfigLine).collect(Collectors.toList());
+
+    } catch (Exception e) {
+      log.log(SEVERE, "Could not read resolver configuration", e);
+      return List.of();
     }
-    return Map.of();
   }
 
-  /** Parses a config line and instantiates a resolver. */
+  /**
+   * Parses a config line and instantiates a resolver.
+   *
+   * @throws IllegalArgumentException if the line is invalid, or an unknown <code>type</code> was
+   *     specified
+   */
   static Resolver readConfigLine(String line) {
-    Pattern pattern =
-        Pattern.compile("^(?<type>[a-z]+)=(?<path>[^,]+)(?:,(?<reload>(true|false)))?$");
-    Matcher matcher = pattern.matcher(line);
+    Matcher matcher = configLinePattern.matcher(line);
 
     if (!matcher.matches()) {
       throw new IllegalArgumentException("Cannot read config line, syntax incorrect: " + line);
     }
-    String type = matcher.group("type");
+
+    String type = Optional.ofNullable(matcher.group("type")).map(String::toLowerCase).orElse(null);
     String path = matcher.group("path");
     boolean reload = Boolean.parseBoolean(matcher.group("reload"));
 
-    if ("file".equals(type)) {
+    if (Objects.equals(type, "file")) {
       return new PropertyFileResolver(Paths.get(path), reload);
-    } else if ("classpath".equals(type)) {
+    } else if (Objects.equals(type, "classpath")) {
       return new ClasspathPropertyFileResolver(path, reload);
+    } else if (Objects.equals(type, "system")) {
+      return new SystemPropertyResolver();
+    } else if (Objects.equals(type, "env")) {
+      return new EnvResolver();
     } else {
       throw new IllegalArgumentException("Did not recognize " + type + " in: " + line);
     }

@@ -59,6 +59,28 @@ class ResolverUtilsTest {
   }
 
   @Test
+  void readConfigLineSystem() {
+    // ACT
+    Resolver resolver = ResolverUtils.readConfigLine("system");
+
+    // ASSERT
+    assertThat(resolver.id(), equalTo("SYSTEM"));
+    assertThat(resolver.isReloadable(), equalTo(false));
+    assertThat(resolver, instanceOf(SystemPropertyResolver.class));
+  }
+
+  @Test
+  void readConfigLineEnv() {
+    // ACT
+    Resolver resolver = ResolverUtils.readConfigLine("env");
+
+    // ASSERT
+    assertThat(resolver.id(), equalTo("ENV"));
+    assertThat(resolver.isReloadable(), equalTo(false));
+    assertThat(resolver, instanceOf(EnvResolver.class));
+  }
+
+  @Test
   void verifyInvalidConfigLines() {
     // ASSERT
     assertThrows(

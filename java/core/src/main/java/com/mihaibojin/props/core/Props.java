@@ -28,6 +28,7 @@ import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.Resolver;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -340,15 +341,15 @@ public class Props implements AutoCloseable {
 
     private Factory() {}
 
-    /** Adds a resolver and its identifier to be used in the registry object being built. */
-    public Factory withResolver(String id, Resolver resolver) {
-      resolvers.put(id, resolver);
+    /** Adds a resolver and identifies it by its {@link Resolver#id()}. */
+    public Factory withResolver(Resolver resolver) {
+      resolvers.put(resolver.id(), resolver);
       return this;
     }
 
     /** Adds a resolver and identifies it by its {@link Resolver#id()}. */
-    public Factory withResolver(Resolver resolver) {
-      resolvers.put(resolver.id(), resolver);
+    public Factory withResolvers(Collection<Resolver> resolvers) {
+      resolvers.forEach(r -> this.resolvers.put(r.id(), r));
       return this;
     }
 
