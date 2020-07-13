@@ -346,9 +346,9 @@ public class Props implements AutoCloseable {
       return this;
     }
 
-    /** Adds a resolver and identifies it by its {@link Resolver#defaultId()}. */
+    /** Adds a resolver and identifies it by its {@link Resolver#id()}. */
     public Factory withResolver(Resolver resolver) {
-      resolvers.put(resolver.defaultId(), resolver);
+      resolvers.put(resolver.id(), resolver);
       return this;
     }
 

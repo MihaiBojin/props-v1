@@ -37,8 +37,7 @@ public class PropsTest {
         Props.factory()
             .withResolver("SYSTEM", new SystemPropertyResolver())
             .withResolver("ENV", new EnvResolver())
-            .withResolver(
-                "CONFIG", new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
             .build();
 
     // ACT
@@ -53,10 +52,8 @@ public class PropsTest {
     // ARRANGE
     Props props =
         Props.factory()
-            .withResolver(
-                "CONFIG1", new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
-            .withResolver(
-                "CONFIG2", new ClasspathPropertyFileResolver("/propfiles/config2.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/config2.properties"))
             .build();
 
     // ACT
@@ -71,15 +68,18 @@ public class PropsTest {
     // ARRANGE
     Props props =
         Props.factory()
-            .withResolver(
-                "CONFIG1", new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
-            .withResolver(
-                "CONFIG2", new ClasspathPropertyFileResolver("/propfiles/config2.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/config1.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/config2.properties"))
             .build();
 
     // ACT
     Integer aValue =
-        props.prop("prop.id", new IntegerConverter() {}).resolver("CONFIG1").build().value().get();
+        props
+            .prop("prop.id", new IntegerConverter() {})
+            .resolver("/propfiles/config1.properties")
+            .build()
+            .value()
+            .get();
 
     // ASSERT
     assertThat(aValue, equalTo(1));

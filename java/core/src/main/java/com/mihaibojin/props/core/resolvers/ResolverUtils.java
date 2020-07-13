@@ -16,8 +16,11 @@
 
 package com.mihaibojin.props.core.resolvers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,6 +29,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ResolverUtils {
   private static final Logger log = Logger.getLogger(ResolverUtils.class.getName());
@@ -94,10 +99,36 @@ public class ResolverUtils {
   }
 
   /**
-   * Helper method that takes a random input string and returns all words uppercased and separated
-   * by a single underscore character.
+   * Read a configuration file that specifies multiple resolvers.
+   *
+   * @throws IOException if the input stream cannot be read
    */
-  public static String formatResolverId(String location) {
-    return location.toUpperCase().replaceAll("[^A-Z]+", "_");
+  public static Map<String, String> readResolverConfig(InputStream stream) throws IOException {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+      // reader.lines().forEach(line -> );
+    }
+    return Map.of();
+  }
+
+  /** Parses a config line and instantiates a resolver. */
+  static Resolver readConfigLine(String line) {
+    Pattern pattern =
+        Pattern.compile("^(?<type>[a-z]+)=(?<path>[^,]+)(?:,(?<reload>(true|false)))?$");
+    Matcher matcher = pattern.matcher(line);
+
+    if (!matcher.matches()) {
+      throw new IllegalArgumentException("Cannot read config line, syntax incorrect: " + line);
+    }
+    String type = matcher.group("type");
+    String path = matcher.group("path");
+    boolean reload = Boolean.parseBoolean(matcher.group("reload"));
+
+    if ("file".equals(type)) {
+      return new PropertyFileResolver(Paths.get(path), reload);
+    } else if ("classpath".equals(type)) {
+      return new ClasspathPropertyFileResolver(path, reload);
+    } else {
+      throw new IllegalArgumentException("Did not recognize " + type + " in: " + line);
+    }
   }
 }

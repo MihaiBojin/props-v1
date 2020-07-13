@@ -74,7 +74,7 @@ public class ResolverPrecedenceExamplesTest {
             .withResolver(new SystemPropertyResolver())
             .withResolver(new EnvResolver())
             // resolvers can be assigned custom IDs
-            .withResolver("PROP", new PropertyFileResolver(propFile))
+            .withResolver(new PropertyFileResolver(propFile))
             .withResolver(
                 new ClasspathPropertyFileResolver("/examples/resolver_precedence.properties"))
             .build();
@@ -84,7 +84,7 @@ public class ResolverPrecedenceExamplesTest {
         props
             .prop("file.encoding")
             // values can be retrieved from a specific resolver, by id
-            .resolver("PROP")
+            .resolver(propFile.toString())
             .readOnce();
 
     // assert that the value is retrieved

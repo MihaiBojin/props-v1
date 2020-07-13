@@ -16,11 +16,12 @@
 
 package com.mihaibojin.props.core.resolvers;
 
-import com.mihaibojin.props.core.Props;
 import java.util.Optional;
 import java.util.Set;
 
 public interface Resolver {
+  /** Returns a string identifying the resolver. */
+  String id();
 
   /**
    * Returns the value of the specified key, or <code>null</code> if the property is not defined.
@@ -41,10 +42,4 @@ public interface Resolver {
   default boolean isReloadable() {
     return true;
   }
-
-  /**
-   * Returns a string identifying the resolver, if a custom id was not specified by calling {@link
-   * Props.Factory#withResolver(String, Resolver)}.
-   */
-  String defaultId();
 }

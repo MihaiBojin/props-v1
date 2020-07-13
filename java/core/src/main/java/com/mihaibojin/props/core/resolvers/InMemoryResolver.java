@@ -59,7 +59,7 @@ public class InMemoryResolver implements Resolver {
   }
 
   @Override
-  public String defaultId() {
+  public String id() {
     return "MEMORY";
   }
 }

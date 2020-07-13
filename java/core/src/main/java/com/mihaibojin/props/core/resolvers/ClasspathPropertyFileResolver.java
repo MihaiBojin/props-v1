@@ -16,7 +16,6 @@
 
 package com.mihaibojin.props.core.resolvers;
 
-import static com.mihaibojin.props.core.resolvers.ResolverUtils.formatResolverId;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -73,7 +72,7 @@ public class ClasspathPropertyFileResolver implements Resolver {
   }
 
   @Override
-  public String defaultId() {
-    return formatResolverId(location);
+  public String id() {
+    return location;
   }
 }

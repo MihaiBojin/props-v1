@@ -26,7 +26,7 @@ public class EnvResolver extends ReadOnlyResolver {
   }
 
   @Override
-  public String defaultId() {
+  public String id() {
     return "ENV";
   }
 }

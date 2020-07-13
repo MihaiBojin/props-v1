@@ -74,7 +74,7 @@ public class PropertyFileResolver implements Resolver {
   }
 
   @Override
-  public String defaultId() {
-    return ResolverUtils.formatResolverId(location.getFileName().toString());
+  public String id() {
+    return location.toString();
   }
 }
