@@ -1,0 +1,91 @@
+name: Release the JAVA library
+
+on:
+  push:
+    tags:
+      - v0.*.*
+      - v1.*.*
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: make setup
+
+      - name: Ensure all tests and static analysis targets pass
+        run: make fmtcheck vet test
+
+      - name: Generate the VERSION file for versioning the POM
+        run: make generate-pom-version
+
+      - name: Build the artifacts
+        run: |
+          make assemble-maven
+          mkdir out
+          mv bazel-bin/java/central-sync/com.mihaibojin.props:props-core.jar out/props-core.jar
+          mv bazel-bin/java/central-sync/com.mihaibojin.props:props-core-javadoc.jar out/props-core-javadoc.jar
+          mv bazel-bin/java/core/src/main/libprops-core-src.jar out/props-core-src.jar
+
+      - name: Attach JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: props-core.jar
+          path: out/props-core.jar
+
+      - name: Attach Javadoc
+        uses: actions/upload-artifact@v2
+        with:
+          name: props-core-javadoc.jar
+          path: out/props-core-javadoc.jar
+
+      - name: Attach source code
+        uses: actions/upload-artifact@v2
+        with:
+          name: props-core-src.jar
+          path: out/props-core-src.jar
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:     ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft:        false
+          prerelease:   false
+
+      - name: Attach the JARs to the GitHub release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token:   ${{ secrets.GITHUB_TOKEN }}
+          tag:          ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          file:         out/*.jar
+          prerelease:   false
+          overwrite:    true
+          file_glob:    true
+
+      - name: Import the GPG signing key
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+        run: |
+          set +vx
+          echo -e "$GPG_KEY" | gpg --import
+          set -vx
+
+      - name: Deploy to Maven Central
+        env:
+          DEPLOY_MAVEN_USERNAME: ${{ secrets.DEPLOY_MAVEN_USERNAME }}
+          DEPLOY_MAVEN_PASSWORD: ${{ secrets.DEPLOY_MAVEN_PASSWORD }}
+        run: |
+          make deploy-maven
+
+      - name: Remove the GPG signing key
+        run: |
+          set -eu
+          [ -d "$HOME/.gnupg" ] && rm -rf "$HOME/.gnupg"
