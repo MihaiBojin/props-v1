@@ -102,14 +102,14 @@ For example, you can load an `integer` property's value, without registering a p
 
 ```java
 Optional<Integer> maybeValue = 
-  props.prop("prop.key", new IntegerConverter() {}).readOnce();
+  props.prop("prop.key", Cast.asInteger()).readOnce();
 ```
 
 Or if you need to retrieve its value more than once, you can `bind` it to the registry as follows: 
 
 ```java
 Prop<Integer> aProp = 
-  props.prop("prop.key", new IntegerConverter() {}).build();
+  props.prop("prop.key", Cast.asInteger()).build();
 Optional<Integer> maybeValue = 
   aProp.value(); // will return the current value, at calling time
 ```
@@ -129,6 +129,37 @@ Props props =
 
 Optional<String> maybeValue = 
   props.prop("prop.key").readOnce(); // will return "two"
+```
+
+
+## Configuring resolvers
+
+Sometimes you may require to configure the resolver layers differently, depending on the
+environment in which the app is running.
+
+For example, you may choose to define the resolvers in a configuration file, and specify
+the configuration file as an argument: 
+
+```bash
+# /tmp/production.config
+system
+env
+classpath=layer1.properties
+file=/tmp/layer2.properties
+
+# Start the app with
+javac Main.java && java -DresolverConfig=production.config Main
+```
+
+```java
+// Main.java
+String confFile = System.getProperty("resolverConfig")
+Props props =
+    Props.factory()
+        .withResolvers(readResolverConfig(Files.newInputStream(Path.of(confFile)))
+        .build();
+
+// props will be initialized with the resolvers defined in the config file
 ```
 
 

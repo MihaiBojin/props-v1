@@ -16,19 +16,19 @@
 
 package com.mihaibojin.props.core.converters;
 
-import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseInstant;
+import static com.mihaibojin.props.core.converters.ConverterUtils.splitString;
+import static java.util.Objects.requireNonNull;
 
-import com.mihaibojin.props.core.annotations.Nullable;
-import java.time.Instant;
+import java.util.List;
 
 /**
- * Converter that casts the inputted {@link String} to an {@link Instant} value.
+ * Converter that splits the inputted {@link String} into a {@link List} of {@link String}s. The
+ * separator can be configured by overriding {@link ListConverter#separator()}.
  */
-public interface InstantConverter extends Converter<Instant> {
+public interface ListOfStringConverter extends Converter<List<String>>, ListConverter {
 
   @Override
-  @Nullable
-  default Instant decode(String value) {
-    return safeParseInstant(value);
+  default List<String> decode(String value) {
+    return splitString(requireNonNull(value), separator());
   }
 }

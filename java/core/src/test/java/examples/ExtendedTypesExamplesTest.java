@@ -24,7 +24,7 @@ import static org.mockito.Mockito.spy;
 import com.mihaibojin.props.core.AbstractProp;
 import com.mihaibojin.props.core.Props;
 import com.mihaibojin.props.core.RefactoredProp;
-import com.mihaibojin.props.core.converters.PropTypeConverter;
+import com.mihaibojin.props.core.converters.Converter;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.InMemoryResolver;
 import com.mihaibojin.props.core.types.AbstractBooleanProp;
@@ -220,7 +220,9 @@ public class ExtendedTypesExamplesTest {
         "Expected the property to not be resolved", aProp.value().isPresent(), equalTo(false));
   }
 
-  /** Custom prop class that reads a numeric value in days. */
+  /**
+   * Custom prop class that reads a numeric value in days.
+   */
   private static class DaysProp extends AbstractNumericDurationProp {
 
     public DaysProp() {
@@ -233,9 +235,11 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
+  /**
+   * Customer prop class that encodes/decodes values in base64.
+   */
   private static class Base64Prop extends AbstractProp<byte[]>
-      implements PropTypeConverter<byte[]> {
+      implements Converter<byte[]> {
 
     private static final Charset CHARSET = Charset.defaultCharset();
 
@@ -244,7 +248,7 @@ public class ExtendedTypesExamplesTest {
     }
 
     public Base64Prop(String key) {
-      super(key, new byte[] {}, null, false, false);
+      super(key, new byte[]{}, null, false, false);
     }
 
     @Override
@@ -258,7 +262,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
+  /**
+   * Customer prop class that encodes/decodes values in base64.
+   */
   private static class Base64PropWithValidation extends Base64Prop {
 
     public Base64PropWithValidation() {
@@ -285,7 +291,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
+  /**
+   * Customer prop class that encodes/decodes values in base64.
+   */
   private static class Base64PropWithBadEncoder extends Base64Prop {
 
     public Base64PropWithBadEncoder() {
@@ -311,7 +319,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
+  /**
+   * Customer prop class that encodes/decodes values in base64.
+   */
   private static class SimpleProp extends AbstractStringProp {
 
     protected SimpleProp(String key) {
@@ -327,7 +337,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** Custom prop class that reads a numeric value in days. */
+  /**
+   * Custom prop class that reads a numeric value in days.
+   */
   private static class PathProp extends AbstractPathProp {
 
     private final boolean expandHomeDir;
@@ -343,7 +355,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** A 'newer' prop of type Boolean. */
+  /**
+   * A 'newer' prop of type Boolean.
+   */
   private static class NewProp extends AbstractBooleanProp {
 
     protected NewProp(String key) {
@@ -351,7 +365,9 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /** An 'older' prop of type Integer. */
+  /**
+   * An 'older' prop of type Integer.
+   */
   private static class OldProp extends AbstractIntegerProp {
 
     protected OldProp(String key) {

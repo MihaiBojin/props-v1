@@ -18,19 +18,19 @@ package com.mihaibojin.props.core.types;
 
 import com.mihaibojin.props.core.AbstractProp;
 import com.mihaibojin.props.core.Prop;
-import com.mihaibojin.props.core.converters.IntegerListConverter;
+import com.mihaibojin.props.core.converters.ListOfStringConverter;
 import java.util.List;
 
 /**
  * Helper class meant to act as a base class when definining a {@link Prop} with the underlying
  * type.
  */
-public abstract class AbstractIntegerListProp extends AbstractProp<List<Integer>>
-    implements IntegerListConverter {
+public abstract class AbstractListOfStringProp extends AbstractProp<List<String>>
+    implements ListOfStringConverter {
 
-  protected AbstractIntegerListProp(
+  protected AbstractListOfStringProp(
       String key,
-      List<Integer> defaultValue,
+      List<String> defaultValue,
       String description,
       boolean isRequired,
       boolean isSecret) {

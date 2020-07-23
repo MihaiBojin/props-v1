@@ -17,7 +17,7 @@
 package com.mihaibojin.props.core;
 
 import com.mihaibojin.props.core.annotations.Nullable;
-import com.mihaibojin.props.core.converters.PropTypeConverter;
+import com.mihaibojin.props.core.converters.Converter;
 import java.util.Optional;
 
 /**
@@ -25,7 +25,7 @@ import java.util.Optional;
  *
  * @param <T> the property's type
  */
-public interface Prop<T> extends PropTypeConverter<T> {
+public interface Prop<T> extends Converter<T> {
 
   /**
    * Identifies the {@link Prop}.

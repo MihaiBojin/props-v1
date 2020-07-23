@@ -18,17 +18,17 @@ package com.mihaibojin.props.core.types;
 
 import com.mihaibojin.props.core.AbstractProp;
 import com.mihaibojin.props.core.Prop;
-import com.mihaibojin.props.core.converters.LongListConverter;
+import com.mihaibojin.props.core.converters.ListOfLongConverter;
 import java.util.List;
 
 /**
  * Helper class meant to act as a base class when definining a {@link Prop} with the underlying
  * type.
  */
-public abstract class AbstractLongListProp extends AbstractProp<List<Long>>
-    implements LongListConverter {
+public abstract class AbstractListOfLongProp extends AbstractProp<List<Long>>
+    implements ListOfLongConverter {
 
-  protected AbstractLongListProp(
+  protected AbstractListOfLongProp(
       String key,
       List<Long> defaultValue,
       String description,

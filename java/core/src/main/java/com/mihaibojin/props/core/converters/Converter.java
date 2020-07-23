@@ -19,7 +19,7 @@ package com.mihaibojin.props.core.converters;
 import com.mihaibojin.props.core.annotations.Nullable;
 
 @FunctionalInterface
-public interface PropTypeConverter<T> {
+public interface Converter<T> {
 
   /**
    * Decodes and decrypts the passed string value into its final type.

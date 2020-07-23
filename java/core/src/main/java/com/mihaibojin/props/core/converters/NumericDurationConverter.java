@@ -22,8 +22,10 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-/** Converter that casts the inputted {@link String} to an {@link Duration} value. */
-public interface NumericDurationConverter extends PropTypeConverter<Duration> {
+/**
+ * Converter that casts the inputted {@link String} to an {@link Duration} value.
+ */
+public interface NumericDurationConverter extends Converter<Duration> {
 
   @Override
   default Duration decode(String value) {
@@ -37,7 +39,5 @@ public interface NumericDurationConverter extends PropTypeConverter<Duration> {
    *
    * @return a {@link ChronoUnit} representing the unit of the underlying value
    */
-  default ChronoUnit unit() {
-    return ChronoUnit.SECONDS;
-  }
+  ChronoUnit unit();
 }

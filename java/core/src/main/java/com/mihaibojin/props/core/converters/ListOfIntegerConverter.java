@@ -21,13 +21,13 @@ import static com.mihaibojin.props.core.converters.ConverterUtils.splitStringAsN
 import java.util.List;
 
 /**
- * Converter that splits the inputted {@link String} into a {@link List} of {@link Float}s. The
+ * Converter that splits the inputted {@link String} into a {@link List} of {@link Integer}s. The
  * separator can be configured by overriding {@link ListConverter#separator()}.
  */
-public interface FloatListConverter extends PropTypeConverter<List<Float>>, ListConverter {
+public interface ListOfIntegerConverter extends Converter<List<Integer>>, ListConverter {
 
   @Override
-  default List<Float> decode(String value) {
-    return splitStringAsNumbers(value, separator(), Number::floatValue);
+  default List<Integer> decode(String value) {
+    return splitStringAsNumbers(value, separator(), Number::intValue);
   }
 }

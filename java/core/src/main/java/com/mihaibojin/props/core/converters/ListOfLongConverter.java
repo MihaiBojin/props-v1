@@ -16,19 +16,18 @@
 
 package com.mihaibojin.props.core.converters;
 
-import static com.mihaibojin.props.core.converters.ConverterUtils.splitString;
-import static java.util.Objects.requireNonNull;
+import static com.mihaibojin.props.core.converters.ConverterUtils.splitStringAsNumbers;
 
 import java.util.List;
 
 /**
- * Converter that splits the inputted {@link String} into a {@link List} of {@link String}s. The
+ * Converter that splits the inputted {@link String} into a {@link List} of {@link Long}s. The
  * separator can be configured by overriding {@link ListConverter#separator()}.
  */
-public interface StringListConverter extends PropTypeConverter<List<String>>, ListConverter {
+public interface ListOfLongConverter extends Converter<List<Long>>, ListConverter {
 
   @Override
-  default List<String> decode(String value) {
-    return splitString(requireNonNull(value), separator());
+  default List<Long> decode(String value) {
+    return splitStringAsNumbers(value, separator(), Number::longValue);
   }
 }

@@ -21,21 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 
 import com.mihaibojin.props.core.Props;
-import com.mihaibojin.props.core.converters.BooleanConverter;
-import com.mihaibojin.props.core.converters.DateConverter;
-import com.mihaibojin.props.core.converters.DoubleConverter;
-import com.mihaibojin.props.core.converters.DoubleListConverter;
-import com.mihaibojin.props.core.converters.DurationConverter;
-import com.mihaibojin.props.core.converters.FloatConverter;
-import com.mihaibojin.props.core.converters.InstantConverter;
-import com.mihaibojin.props.core.converters.IntegerConverter;
-import com.mihaibojin.props.core.converters.IntegerListConverter;
-import com.mihaibojin.props.core.converters.LongConverter;
-import com.mihaibojin.props.core.converters.LongListConverter;
-import com.mihaibojin.props.core.converters.NumericDurationConverter;
-import com.mihaibojin.props.core.converters.PathConverter;
-import com.mihaibojin.props.core.converters.StringConverter;
-import com.mihaibojin.props.core.converters.StringListConverter;
+import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -65,16 +51,27 @@ public class StandardTypesExamplesTest {
   @Test
   void readBoolean() {
     // initialize a prop and read its value once
-    Optional<Boolean> maybeValue = props.prop("a.boolean", new BooleanConverter() {}).readOnce();
+    Optional<Boolean> maybeValue = props.prop("a.boolean", Cast.asBoolean()).readOnce();
 
     // assert that the value is retrieved
     assertThat("Expected to read and correctly cast the property", maybeValue.get(), equalTo(true));
   }
 
+
+  @Test
+  void readChronoUnit() {
+    // initialize a prop and read its value once
+    Optional<ChronoUnit> maybeValue = props.prop("a.chronounit", Cast.asChronoUnit()).readOnce();
+
+    // assert that the value is retrieved
+    assertThat("Expected to read and correctly cast the property", maybeValue.get(),
+        equalTo(ChronoUnit.MINUTES));
+  }
+
   @Test
   void readInteger() {
     // initialize a prop and read its value once
-    Optional<Integer> maybeValue = props.prop("an.integer", new IntegerConverter() {}).readOnce();
+    Optional<Integer> maybeValue = props.prop("an.integer", Cast.asInteger()).readOnce();
 
     // assert that the value is retrieved
     assertThat("Expected to read and correctly cast the property", maybeValue.get(), equalTo(1));
@@ -83,7 +80,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readLong() {
     // initialize a prop and read its value once
-    Optional<Long> maybeValue = props.prop("a.long", new LongConverter() {}).readOnce();
+    Optional<Long> maybeValue = props.prop("a.long", Cast.asLong()).readOnce();
 
     // assert that the value is retrieved
     assertThat("Expected to read and correctly cast the property", maybeValue.get(), equalTo(1L));
@@ -92,7 +89,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readFloat() {
     // initialize a prop and read its value once
-    Optional<Float> maybeValue = props.prop("a.float", new FloatConverter() {}).readOnce();
+    Optional<Float> maybeValue = props.prop("a.float", Cast.asFloat()).readOnce();
 
     // assert that the value is retrieved
     assertThat("Expected to read and correctly cast the property", maybeValue.get(), equalTo(1.0f));
@@ -101,7 +98,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readDouble() {
     // initialize a prop and read its value once
-    Optional<Double> maybeValue = props.prop("a.double", new DoubleConverter() {}).readOnce();
+    Optional<Double> maybeValue = props.prop("a.double", Cast.asDouble()).readOnce();
 
     // assert that the value is retrieved
     assertThat("Expected to read and correctly cast the property", maybeValue.get(), equalTo(1.0d));
@@ -110,7 +107,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readString() {
     // initialize a prop and read its value once
-    Optional<String> maybeValue = props.prop("a.string", new StringConverter() {}).readOnce();
+    Optional<String> maybeValue = props.prop("a.string", Cast.asString()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -120,7 +117,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readDate() {
     // initialize a prop and read its value once
-    Optional<Date> maybeValue = props.prop("a.date", new DateConverter() {}).readOnce();
+    Optional<Date> maybeValue = props.prop("a.date", Cast.asDate()).readOnce();
 
     Date expectedDate =
         Date.from(
@@ -136,7 +133,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readInstant() {
     // initialize a prop and read its value once
-    Optional<Instant> maybeValue = props.prop("an.instant", new InstantConverter() {}).readOnce();
+    Optional<Instant> maybeValue = props.prop("an.instant", Cast.asInstant()).readOnce();
 
     Instant expectedInstant =
         LocalDate.parse("2020-05-12").atStartOfDay().atOffset(ZoneOffset.UTC).toInstant();
@@ -151,7 +148,7 @@ public class StandardTypesExamplesTest {
   @Test
   void readDuration() {
     // initialize a prop and read its value once
-    Optional<Duration> maybeValue = props.prop("a.duration", new DurationConverter() {}).readOnce();
+    Optional<Duration> maybeValue = props.prop("a.duration", Cast.asDuration()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -164,7 +161,7 @@ public class StandardTypesExamplesTest {
   void readNumericDurationSeconds() {
     // initialize a prop and read its value once
     Optional<Duration> maybeValue =
-        props.prop("a.numeric.duration.seconds", new NumericDurationConverter() {}).readOnce();
+        props.prop("a.numeric.duration.seconds", Cast.asNumericDuration()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -178,14 +175,7 @@ public class StandardTypesExamplesTest {
     // initialize a prop and read its value once
     Optional<Duration> maybeValue =
         props
-            .prop(
-                "a.numeric.duration.days",
-                new NumericDurationConverter() {
-                  @Override
-                  public ChronoUnit unit() {
-                    return ChronoUnit.DAYS;
-                  }
-                })
+            .prop("a.numeric.duration.days", Cast.asNumericDuration(ChronoUnit.DAYS))
             .readOnce();
 
     // assert that the value is retrieved
@@ -199,7 +189,7 @@ public class StandardTypesExamplesTest {
   void readIntegerList() {
     // initialize a prop and read its value once
     Optional<List<Integer>> maybeValue =
-        props.prop("an.integer.list", new IntegerListConverter() {}).readOnce();
+        props.prop("an.integer.list", Cast.asListOfInteger()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -212,7 +202,7 @@ public class StandardTypesExamplesTest {
   void readLongList() {
     // initialize a prop and read its value once
     Optional<List<Long>> maybeValue =
-        props.prop("a.long.list", new LongListConverter() {}).readOnce();
+        props.prop("a.long.list", Cast.asListOfLong()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -225,7 +215,7 @@ public class StandardTypesExamplesTest {
   void readDoubleList() {
     // initialize a prop and read its value once
     Optional<List<Double>> maybeValue =
-        props.prop("a.double.list", new DoubleListConverter() {}).readOnce();
+        props.prop("a.double.list", Cast.asListOfDouble()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -238,7 +228,7 @@ public class StandardTypesExamplesTest {
   void readStringList() {
     // initialize a prop and read its value once
     Optional<List<String>> maybeValue =
-        props.prop("a.string.list", new StringListConverter() {}).readOnce();
+        props.prop("a.string.list", Cast.asListOfString()).readOnce();
 
     // assert that the value is retrieved
     assertThat(
@@ -250,12 +240,24 @@ public class StandardTypesExamplesTest {
   @Test
   void readPath() {
     // initialize a prop and read its value once
-    Optional<Path> maybeValue = props.prop("a.path", new PathConverter() {}).readOnce();
+    Optional<Path> maybeValue = props.prop("a.path", Cast.asPath(false)).readOnce();
 
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
         maybeValue.get(),
         equalTo(Path.of("/tmp")));
+  }
+
+  @Test
+  void readHomeDirPath() {
+    // initialize a prop and read its value once
+    Optional<Path> maybeValue = props.prop("the.home.dir", Cast.asPath()).readOnce();
+
+    // assert that the value is retrieved
+    assertThat(
+        "Expected to read and correctly cast the property",
+        maybeValue.get(),
+        equalTo(Path.of(System.getProperty("user.home"))));
   }
 }

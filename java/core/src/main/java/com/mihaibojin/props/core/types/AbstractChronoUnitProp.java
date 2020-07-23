@@ -18,21 +18,18 @@ package com.mihaibojin.props.core.types;
 
 import com.mihaibojin.props.core.AbstractProp;
 import com.mihaibojin.props.core.Prop;
-import com.mihaibojin.props.core.converters.FloatListConverter;
-import java.util.List;
+import com.mihaibojin.props.core.converters.ChronoUnitConverter;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Helper class meant to act as a base class when definining a {@link Prop} with the underlying
  * type.
  */
-public abstract class AbstractFloatListProp extends AbstractProp<List<Float>>
-    implements FloatListConverter {
-
-  protected AbstractFloatListProp(
-      String key,
-      List<Float> defaultValue,
-      String description,
-      boolean isRequired,
+public abstract class AbstractChronoUnitProp extends AbstractProp<ChronoUnit>
+    implements ChronoUnitConverter {
+  
+  protected AbstractChronoUnitProp(
+      String key, ChronoUnit defaultValue, String description, boolean isRequired,
       boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);
   }

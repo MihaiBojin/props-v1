@@ -18,25 +18,17 @@ package com.mihaibojin.props.core.converters;
 
 import java.nio.file.Path;
 
-/** Converter that returns the inputted {@link String}. */
-public interface PathConverter extends PropTypeConverter<Path> {
+/**
+ * Converter that returns the inputted {@link String}.
+ */
+public interface PathConverter extends Converter<Path> {
 
   /**
-   * Prefixes the specified path with the user's home directory, if the input starts with <code>~
-   * </code>.
-   *
-   * <p>It is the caller's responsibility to prevent any edge-cases or bad input (e.g., '~~'); this
-   * method will simply replace the first tilda character with the user's home directory.
+   * If true, <code>~</code> will expand to the user's home directory, as returned by <code>
+   * System.getProperty("user.home")</code>.
    */
-  static String replaceTildeWithUserHomeDir(String path) {
-    // if the specified path starts with '~'
-    if (path.startsWith("~")) {
-      // prefix the path with the user's home directory
-      return System.getProperty("user.home") + path.substring(1);
-    }
+  boolean expandUserHomeDir();
 
-    return path;
-  }
 
   /**
    * Parses the specified input string into a <code>Path</code>.
@@ -57,16 +49,20 @@ public interface PathConverter extends PropTypeConverter<Path> {
     return Path.of(value);
   }
 
-  @Override
-  default String encode(Path value) {
-    return value.toString();
-  }
-
   /**
-   * By default, expand <code>~</code> to the user's home directory, as returned by <code>
-   * System.getProperty("user.home")</code>.
+   * Prefixes the specified path with the user's home directory, if the input starts with <code>~
+   * </code>.
+   *
+   * <p>It is the caller's responsibility to prevent any edge-cases or bad input (e.g., '~~'); this
+   * method will simply replace the first tilda character with the user's home directory.
    */
-  default boolean expandUserHomeDir() {
-    return true;
+  static String replaceTildeWithUserHomeDir(String path) {
+    // if the specified path starts with '~'
+    if (path.startsWith("~")) {
+      // prefix the path with the user's home directory
+      return System.getProperty("user.home") + path.substring(1);
+    }
+
+    return path;
   }
 }

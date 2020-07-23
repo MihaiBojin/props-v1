@@ -18,8 +18,7 @@ package benchmark;
 
 import com.mihaibojin.props.core.Prop;
 import com.mihaibojin.props.core.Props;
-import com.mihaibojin.props.core.converters.LongConverter;
-import com.mihaibojin.props.core.converters.LongListConverter;
+import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.EnvResolver;
 import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
@@ -51,7 +50,9 @@ public class GenericBenchmarks {
 
   public static final int PROP_COUNT = 3334;
 
-  /** Loads a String {@link com.mihaibojin.props.core.Prop}. */
+  /**
+   * Loads a String {@link com.mihaibojin.props.core.Prop}.
+   */
   @Benchmark
   @BenchmarkMode(Mode.SampleTime)
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -73,7 +74,9 @@ public class GenericBenchmarks {
         .forEach(blackhole::consume);
   }
 
-  /** Initialize the {@link Props} registry. */
+  /**
+   * Initialize the {@link Props} registry.
+   */
   @State(Scope.Benchmark)
   public static class PropsState {
 
@@ -84,7 +87,9 @@ public class GenericBenchmarks {
     List<Prop<Long>> longProps = new ArrayList<>(50);
     List<Prop<List<Long>>> longListProps = new ArrayList<>(50);
 
-    /** Helper method for generating pseudo-random properties. */
+    /**
+     * Helper method for generating pseudo-random properties.
+     */
     public static Properties generateRandomProperties(File file, int count) {
       Properties properties = new Properties();
       long baseValue = Instant.now().toEpochMilli();
@@ -115,7 +120,9 @@ public class GenericBenchmarks {
       return properties;
     }
 
-    /** Initialize the benchmark. */
+    /**
+     * Initialize the benchmark.
+     */
     @Setup
     public void setup() {
       try {
@@ -141,17 +148,19 @@ public class GenericBenchmarks {
       initializeProps();
     }
 
-    /** Initialize all property types. */
+    /**
+     * Initialize all property types.
+     */
     public void initializeProps() {
       for (int i = 0; i < PROP_COUNT; i++) {
         stringProps.add(props.prop("string." + i).isRequired(true).build());
       }
       for (int i = 0; i < PROP_COUNT; i++) {
-        longProps.add(props.prop("long." + i, new LongConverter() {}).isRequired(true).build());
+        longProps.add(props.prop("long." + i, Cast.asLong()).isRequired(true).build());
       }
       for (int i = 0; i < PROP_COUNT; i++) {
         longListProps.add(
-            props.prop("longlist." + i, new LongListConverter() {}).isRequired(true).build());
+            props.prop("longlist." + i, Cast.asListOfLong()).isRequired(true).build());
       }
     }
 

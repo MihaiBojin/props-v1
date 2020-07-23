@@ -21,13 +21,13 @@ import static com.mihaibojin.props.core.converters.ConverterUtils.splitStringAsN
 import java.util.List;
 
 /**
- * Converter that splits the inputted {@link String} into a {@link List} of {@link Long}s. The
+ * Converter that splits the inputted {@link String} into a {@link List} of {@link Double}s. The
  * separator can be configured by overriding {@link ListConverter#separator()}.
  */
-public interface LongListConverter extends PropTypeConverter<List<Long>>, ListConverter {
+public interface ListOfDoubleConverter extends Converter<List<Double>>, ListConverter {
 
   @Override
-  default List<Long> decode(String value) {
-    return splitStringAsNumbers(value, separator(), Number::longValue);
+  default List<Double> decode(String value) {
+    return splitStringAsNumbers(value, separator(), Number::doubleValue);
   }
 }

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import com.mihaibojin.props.core.Props.Factory;
-import com.mihaibojin.props.core.converters.IntegerConverter;
+import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.EnvResolver;
 import com.mihaibojin.props.core.resolvers.SystemPropertyResolver;
@@ -43,7 +43,7 @@ public class PropsTest {
             .build();
 
     // ACT
-    Integer aValue = props.prop("prop.id", new IntegerConverter() {}).build().value().get();
+    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().value().get();
 
     // ASSERT
     assertThat(aValue, equalTo(1));
@@ -59,7 +59,7 @@ public class PropsTest {
             .build();
 
     // ACT
-    Integer aValue = props.prop("prop.id", new IntegerConverter() {}).build().value().get();
+    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().value().get();
 
     // ASSERT
     assertThat(aValue, equalTo(2));
@@ -77,7 +77,7 @@ public class PropsTest {
     // ACT
     Integer aValue =
         props
-            .prop("prop.id", new IntegerConverter() {})
+            .prop("prop.id", Cast.asInteger())
             .resolver("/propfiles/config1.properties")
             .build()
             .value()

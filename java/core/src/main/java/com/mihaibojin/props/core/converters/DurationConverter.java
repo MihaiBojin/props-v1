@@ -21,8 +21,10 @@ import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseDurat
 import com.mihaibojin.props.core.annotations.Nullable;
 import java.time.Duration;
 
-/** Converter that casts the inputted {@link String} to an {@link Duration} value. */
-public interface DurationConverter extends PropTypeConverter<Duration> {
+/**
+ * Converter that casts the inputted {@link String} to an {@link Duration} value.
+ */
+public interface DurationConverter extends Converter<Duration> {
 
   @Override
   @Nullable
