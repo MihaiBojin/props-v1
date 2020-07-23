@@ -27,6 +27,7 @@ import java.util.List;
  */
 public abstract class AbstractIntegerListProp extends AbstractProp<List<Integer>>
     implements IntegerListConverter {
+
   protected AbstractIntegerListProp(
       String key,
       List<Integer> defaultValue,

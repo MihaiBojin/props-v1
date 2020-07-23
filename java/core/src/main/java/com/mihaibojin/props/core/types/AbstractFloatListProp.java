@@ -27,6 +27,7 @@ import java.util.List;
  */
 public abstract class AbstractFloatListProp extends AbstractProp<List<Float>>
     implements FloatListConverter {
+
   protected AbstractFloatListProp(
       String key,
       List<Float> defaultValue,

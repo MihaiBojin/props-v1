@@ -23,6 +23,7 @@ import java.time.Instant;
 
 /** Converter that casts the inputted {@link String} to an {@link Instant} value. */
 public interface InstantConverter extends PropTypeConverter<Instant> {
+
   @Override
   @Nullable
   default Instant decode(String value) {

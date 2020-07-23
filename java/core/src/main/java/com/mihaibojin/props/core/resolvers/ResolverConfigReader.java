@@ -17,5 +17,6 @@
 package com.mihaibojin.props.core.resolvers;
 
 public class ResolverConfigReader {
+
   public void read() {}
 }

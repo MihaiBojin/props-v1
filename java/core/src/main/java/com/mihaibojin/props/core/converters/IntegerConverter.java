@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 
 /** Converter that casts the inputted {@link String} to an {@link Integer} value. */
 public interface IntegerConverter extends PropTypeConverter<Integer> {
+
   @Override
   default Integer decode(String value) {
     return requireNonNull(safeParseNumber(value)).intValue();

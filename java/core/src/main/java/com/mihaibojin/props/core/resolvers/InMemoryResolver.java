@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** Useful for tests, when the implementation requires overriding values. */
 public class InMemoryResolver implements Resolver {
+
   private final ConcurrentHashMap<String, String> store = new ConcurrentHashMap<>();
   private final Set<String> updatedKeys = new HashSet<>();
 

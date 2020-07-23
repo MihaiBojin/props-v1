@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClasspathPropertyFileResolver implements Resolver {
+
   private static final Logger log = Logger.getLogger(ClasspathPropertyFileResolver.class.getName());
 
   private final Map<String, String> store = new HashMap<>();

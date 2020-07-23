@@ -19,6 +19,7 @@ package com.mihaibojin.props.core.resolvers;
 import java.util.Set;
 
 public abstract class ReadOnlyResolver implements Resolver {
+
   @Override
   public final boolean isReloadable() {
     return false;

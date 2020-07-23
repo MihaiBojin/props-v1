@@ -35,6 +35,7 @@ import java.util.logging.Logger;
  * @param <T2> the type of the second property
  */
 public class RefactoredProp<T1, T2> {
+
   private static final Logger log = Logger.getLogger(RefactoredProp.class.getName());
 
   private final Prop<T1> prop1;

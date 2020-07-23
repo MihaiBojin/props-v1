@@ -45,6 +45,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 public class ExtendedTypesExamplesTest {
+
   private Props props;
 
   @BeforeEach
@@ -68,18 +69,6 @@ public class ExtendedTypesExamplesTest {
         equalTo(Duration.ofDays(1)));
   }
 
-  /** Custom prop class that reads a numeric value in days. */
-  private static class DaysProp extends AbstractNumericDurationProp {
-    public DaysProp() {
-      super("a.value.in.days", null, null, false, false);
-    }
-
-    @Override
-    public ChronoUnit unit() {
-      return ChronoUnit.DAYS;
-    }
-  }
-
   @Test
   void customEncoder() {
     // initialize a prop
@@ -98,30 +87,6 @@ public class ExtendedTypesExamplesTest {
         equalTo(expectedValue));
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
-  private static class Base64Prop extends AbstractProp<byte[]>
-      implements PropTypeConverter<byte[]> {
-    private static final Charset CHARSET = Charset.defaultCharset();
-
-    public Base64Prop() {
-      this("a.base64.prop");
-    }
-
-    public Base64Prop(String key) {
-      super(key, new byte[] {}, null, false, false);
-    }
-
-    @Override
-    public byte[] decode(String value) {
-      return Base64.getMimeDecoder().decode(value.getBytes(CHARSET));
-    }
-
-    @Override
-    public String encode(byte[] value) {
-      return Base64.getMimeEncoder().encodeToString(value);
-    }
-  }
-
   @Test
   void customValidation() {
     // initialize a prop
@@ -135,64 +100,11 @@ public class ExtendedTypesExamplesTest {
         equalTo(expectedValue));
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
-  private static class Base64PropWithValidation extends Base64Prop {
-
-    public Base64PropWithValidation() {
-      // we cannot bind more than one Prop class to the same key
-      super("a.base64.prop.with.validation");
-    }
-
-    @Override
-    protected void validateBeforeSet(byte[] value) {
-      super.validateBeforeSet(value);
-
-      // ensure the input is valid
-      if (isNull(value)) {
-        throw new IllegalStateException("Valid bytes must be provided and cannot be a null object");
-      }
-
-      // custom validation logic
-      // ensure that the encode() function is an inverse of decode()
-      if (!Arrays.equals(value, decode(encode(value)))) {
-        throw new IllegalStateException(
-            "A value that is encoded and subsequently decoded should result in the same original"
-                + " value");
-      }
-    }
-  }
-
   @Test
   void customValidationWithFailure() {
     // the prop will fail to bind, as prop values are validated before being set
     Assertions.assertThrows(
         IllegalStateException.class, () -> props.bind(new Base64PropWithBadEncoder()));
-  }
-
-  /** Customer prop class that encodes/decodes values in base64. */
-  private static class Base64PropWithBadEncoder extends Base64Prop {
-
-    public Base64PropWithBadEncoder() {
-      // we cannot bind more than one Prop class to the same key
-      super("a.base64.prop.with.validation2");
-    }
-
-    @Override
-    public String encode(byte[] value) {
-      // this implementation is BAD, since it is not the inverse of the base64 decode
-      return new String(value, Charset.defaultCharset());
-    }
-
-    @Override
-    protected void validateBeforeSet(byte[] value) {
-      // custom validation logic
-      // this should fail because of the bad encode() method above
-      if (!Arrays.equals(value, decode(encode(value)))) {
-        throw new IllegalStateException(
-            "A value that is encoded and subsequently decoded should result in the same original"
-                + " value");
-      }
-    }
   }
 
   @Test
@@ -227,22 +139,6 @@ public class ExtendedTypesExamplesTest {
         equalTo(updatedValue));
   }
 
-  /** Customer prop class that encodes/decodes values in base64. */
-  private static class SimpleProp extends AbstractStringProp {
-
-    protected SimpleProp(String key) {
-      super(key, null, null, false, false);
-    }
-
-    @Override
-    public String decode(String value) {
-      // unfortunately Mockito doesn't work well with default methods
-      // and overriding this method call is required for the spied object to correctly decode its
-      // values
-      return super.decode(value);
-    }
-  }
-
   @Test
   void pathProp() {
     // initialize a prop
@@ -253,21 +149,6 @@ public class ExtendedTypesExamplesTest {
         "Expected to read and correctly cast the property",
         aProp.value().get(),
         equalTo(Path.of("/tmp")));
-  }
-
-  /** Custom prop class that reads a numeric value in days. */
-  private static class PathProp extends AbstractPathProp {
-    private final boolean expandHomeDir;
-
-    protected PathProp(String key, boolean expandHomeDir) {
-      super(key, null, null, false, false);
-      this.expandHomeDir = expandHomeDir;
-    }
-
-    @Override
-    public boolean expandUserHomeDir() {
-      return expandHomeDir;
-    }
   }
 
   @Test
@@ -292,20 +173,6 @@ public class ExtendedTypesExamplesTest {
         "Expected to read and correctly cast the property",
         aProp.value().get(),
         equalTo(Path.of("~/")));
-  }
-
-  /** A 'newer' prop of type Boolean. */
-  private static class NewProp extends AbstractBooleanProp {
-    protected NewProp(String key) {
-      super(key, null, null, false, false);
-    }
-  }
-
-  /** An 'older' prop of type Integer. */
-  private static class OldProp extends AbstractIntegerProp {
-    protected OldProp(String key) {
-      super(key, null, null, false, false);
-    }
   }
 
   @Test
@@ -351,5 +218,144 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected the property to not be resolved", aProp.value().isPresent(), equalTo(false));
+  }
+
+  /** Custom prop class that reads a numeric value in days. */
+  private static class DaysProp extends AbstractNumericDurationProp {
+
+    public DaysProp() {
+      super("a.value.in.days", null, null, false, false);
+    }
+
+    @Override
+    public ChronoUnit unit() {
+      return ChronoUnit.DAYS;
+    }
+  }
+
+  /** Customer prop class that encodes/decodes values in base64. */
+  private static class Base64Prop extends AbstractProp<byte[]>
+      implements PropTypeConverter<byte[]> {
+
+    private static final Charset CHARSET = Charset.defaultCharset();
+
+    public Base64Prop() {
+      this("a.base64.prop");
+    }
+
+    public Base64Prop(String key) {
+      super(key, new byte[] {}, null, false, false);
+    }
+
+    @Override
+    public byte[] decode(String value) {
+      return Base64.getMimeDecoder().decode(value.getBytes(CHARSET));
+    }
+
+    @Override
+    public String encode(byte[] value) {
+      return Base64.getMimeEncoder().encodeToString(value);
+    }
+  }
+
+  /** Customer prop class that encodes/decodes values in base64. */
+  private static class Base64PropWithValidation extends Base64Prop {
+
+    public Base64PropWithValidation() {
+      // we cannot bind more than one Prop class to the same key
+      super("a.base64.prop.with.validation");
+    }
+
+    @Override
+    protected void validateBeforeSet(byte[] value) {
+      super.validateBeforeSet(value);
+
+      // ensure the input is valid
+      if (isNull(value)) {
+        throw new IllegalStateException("Valid bytes must be provided and cannot be a null object");
+      }
+
+      // custom validation logic
+      // ensure that the encode() function is an inverse of decode()
+      if (!Arrays.equals(value, decode(encode(value)))) {
+        throw new IllegalStateException(
+            "A value that is encoded and subsequently decoded should result in the same original"
+                + " value");
+      }
+    }
+  }
+
+  /** Customer prop class that encodes/decodes values in base64. */
+  private static class Base64PropWithBadEncoder extends Base64Prop {
+
+    public Base64PropWithBadEncoder() {
+      // we cannot bind more than one Prop class to the same key
+      super("a.base64.prop.with.validation2");
+    }
+
+    @Override
+    public String encode(byte[] value) {
+      // this implementation is BAD, since it is not the inverse of the base64 decode
+      return new String(value, Charset.defaultCharset());
+    }
+
+    @Override
+    protected void validateBeforeSet(byte[] value) {
+      // custom validation logic
+      // this should fail because of the bad encode() method above
+      if (!Arrays.equals(value, decode(encode(value)))) {
+        throw new IllegalStateException(
+            "A value that is encoded and subsequently decoded should result in the same original"
+                + " value");
+      }
+    }
+  }
+
+  /** Customer prop class that encodes/decodes values in base64. */
+  private static class SimpleProp extends AbstractStringProp {
+
+    protected SimpleProp(String key) {
+      super(key, null, null, false, false);
+    }
+
+    @Override
+    public String decode(String value) {
+      // unfortunately Mockito doesn't work well with default methods
+      // and overriding this method call is required for the spied object to correctly decode its
+      // values
+      return super.decode(value);
+    }
+  }
+
+  /** Custom prop class that reads a numeric value in days. */
+  private static class PathProp extends AbstractPathProp {
+
+    private final boolean expandHomeDir;
+
+    protected PathProp(String key, boolean expandHomeDir) {
+      super(key, null, null, false, false);
+      this.expandHomeDir = expandHomeDir;
+    }
+
+    @Override
+    public boolean expandUserHomeDir() {
+      return expandHomeDir;
+    }
+  }
+
+  /** A 'newer' prop of type Boolean. */
+  private static class NewProp extends AbstractBooleanProp {
+
+    protected NewProp(String key) {
+      super(key, null, null, false, false);
+    }
+  }
+
+  /** An 'older' prop of type Integer. */
+  private static class OldProp extends AbstractIntegerProp {
+
+    protected OldProp(String key) {
+      super(key, null, null, false, false);
+    }
   }
 }

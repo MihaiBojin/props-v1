@@ -19,6 +19,7 @@ package com.mihaibojin.props.core;
 import static java.lang.String.format;
 
 public class BindException extends RuntimeException {
+
   private static final long serialVersionUID = 6724194007112553874L;
 
   /**

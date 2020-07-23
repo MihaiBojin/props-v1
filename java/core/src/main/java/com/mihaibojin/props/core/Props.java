@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Props implements AutoCloseable {
+
   private static final Logger log = Logger.getLogger(PropertyFileResolver.class.getName());
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
   // TODO(mihaibojin): boundProps is read-heavy, find a better data structure
@@ -332,6 +333,7 @@ public class Props implements AutoCloseable {
 
   /** Factory class for building {@link Props} registry classes. */
   public static class Factory {
+
     private final LinkedHashMap<String, Resolver> resolvers = new LinkedHashMap<>();
     private Duration refreshInterval = Duration.ofSeconds(30);
     private Duration shutdownGracePeriod = Duration.ofSeconds(30);
@@ -395,7 +397,7 @@ public class Props implements AutoCloseable {
         throw new IllegalStateException("Cannot initialize Props without any Resolvers");
       }
 
-      final Props props = new Props(resolvers, refreshInterval, shutdownGracePeriod);
+      Props props = new Props(resolvers, refreshInterval, shutdownGracePeriod);
 
       if (shouldRegisterShutdownHook) {
         registerShutdownHook(props);
@@ -407,6 +409,7 @@ public class Props implements AutoCloseable {
 
   /** Builder class for creating custom {@link Prop}s from the current {@link Props} registry. */
   public class Builder<T> {
+
     public final String key;
     public final PropTypeConverter<T> converter;
     @Nullable private T defaultValue;

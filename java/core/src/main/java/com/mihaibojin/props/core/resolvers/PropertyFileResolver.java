@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class PropertyFileResolver implements Resolver {
+
   private static final Logger log = Logger.getLogger(PropertyFileResolver.class.getName());
 
   private final Map<String, String> store = new HashMap<>();

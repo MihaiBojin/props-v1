@@ -26,6 +26,7 @@ import java.nio.file.Path;
  * type.
  */
 public abstract class AbstractPathProp extends AbstractProp<Path> implements PathConverter {
+
   protected AbstractPathProp(
       String key, Path defaultValue, String description, boolean isRequired, boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);

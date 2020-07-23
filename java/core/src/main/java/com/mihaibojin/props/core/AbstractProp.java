@@ -23,6 +23,7 @@ import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.Optional;
 
 public abstract class AbstractProp<T> implements Prop<T> {
+
   public final String key;
   @Nullable private final T defaultValue;
   @Nullable private final String description;

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 /** Converter that casts the inputted {@link String} to an {@link Duration} value. */
 public interface NumericDurationConverter extends PropTypeConverter<Duration> {
+
   @Override
   default Duration decode(String value) {
     return Optional.ofNullable(safeParseNumber(value))

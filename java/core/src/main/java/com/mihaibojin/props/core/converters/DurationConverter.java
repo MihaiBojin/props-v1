@@ -23,6 +23,7 @@ import java.time.Duration;
 
 /** Converter that casts the inputted {@link String} to an {@link Duration} value. */
 public interface DurationConverter extends PropTypeConverter<Duration> {
+
   @Override
   @Nullable
   default Duration decode(String value) {

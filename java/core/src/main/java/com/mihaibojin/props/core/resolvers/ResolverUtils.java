@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ResolverUtils {
+
   private static final Logger log = Logger.getLogger(ResolverUtils.class.getName());
   private static final Pattern configLinePattern =
       Pattern.compile(

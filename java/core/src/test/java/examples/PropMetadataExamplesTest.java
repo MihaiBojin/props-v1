@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PropMetadataExamplesTest {
+
   private Props props;
 
   @BeforeEach
@@ -51,12 +52,6 @@ public class PropMetadataExamplesTest {
         ValidationException.class,
         aProp::value,
         "Expecting prop to throw, since it is required but is missing a value");
-  }
-
-  private static class RequiredProp extends AbstractStringProp {
-    RequiredProp(String key, String defaultValue) {
-      super(key, defaultValue, null, true, false);
-    }
   }
 
   @Test
@@ -108,7 +103,15 @@ public class PropMetadataExamplesTest {
         containsString(aProp.redact(aProp.value().get())));
   }
 
+  private static class RequiredProp extends AbstractStringProp {
+
+    RequiredProp(String key, String defaultValue) {
+      super(key, defaultValue, null, true, false);
+    }
+  }
+
   private static class SecretProp extends AbstractStringProp {
+
     SecretProp(String key) {
       super(key, null, null, true, true);
     }

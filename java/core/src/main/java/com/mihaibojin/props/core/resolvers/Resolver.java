@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface Resolver {
+
   /** Returns a string identifying the resolver. */
   String id();
 
@@ -37,7 +38,7 @@ public interface Resolver {
 
   /**
    * Returns <code>true</code> if the implementation can reload its properties, or <code>false
-   *     </code> if it cannot.
+   * </code> if it cannot.
    */
   default boolean isReloadable() {
     return true;

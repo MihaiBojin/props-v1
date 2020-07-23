@@ -27,6 +27,7 @@ import java.time.Duration;
  */
 public abstract class AbstractNumericDurationProp extends AbstractProp<Duration>
     implements NumericDurationConverter {
+
   protected AbstractNumericDurationProp(
       String key, Duration defaultValue, String description, boolean isRequired, boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);

@@ -27,6 +27,7 @@ import java.util.List;
  */
 public abstract class AbstractDoubleListProp extends AbstractProp<List<Double>>
     implements DoubleListConverter {
+
   protected AbstractDoubleListProp(
       String key,
       List<Double> defaultValue,

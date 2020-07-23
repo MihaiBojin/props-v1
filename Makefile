@@ -36,13 +36,13 @@ fmt:
 
 	@echo ""
 	@echo "==> Formatting JAVA files..."
-	bazelisk run //:google-java-format
+	bazelisk run //java:google-java-format
 
 .PHONY: fmtcheck
 fmtcheck:
 	@echo ""
 	@echo "==> Ensuring tht the JAVA code is properly formatted..."
-	bazelisk build //:google-java-format-check
+	bazelisk build //java:google-java-format-check
 
 #	TODO(mihaibojin): Re-enable once the segfault is fixed
 #	@echo ""

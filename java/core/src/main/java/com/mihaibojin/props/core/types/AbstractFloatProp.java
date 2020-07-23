@@ -25,6 +25,7 @@ import com.mihaibojin.props.core.converters.FloatConverter;
  * type.
  */
 public abstract class AbstractFloatProp extends AbstractProp<Float> implements FloatConverter {
+
   protected AbstractFloatProp(
       String key, Float defaultValue, String description, boolean isRequired, boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);

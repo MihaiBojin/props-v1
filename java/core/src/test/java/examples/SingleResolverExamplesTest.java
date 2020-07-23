@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class SingleResolverExamplesTest {
+
   private static final String propKey = "prop";
   @TempDir static File tempDir;
   private static Path propFile;

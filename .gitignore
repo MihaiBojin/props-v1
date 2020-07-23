@@ -190,7 +190,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
+java/BUILD/
 develop-eggs/
 dist/
 downloads/

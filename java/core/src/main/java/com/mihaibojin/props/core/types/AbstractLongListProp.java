@@ -27,6 +27,7 @@ import java.util.List;
  */
 public abstract class AbstractLongListProp extends AbstractProp<List<Long>>
     implements LongListConverter {
+
   protected AbstractLongListProp(
       String key,
       List<Long> defaultValue,

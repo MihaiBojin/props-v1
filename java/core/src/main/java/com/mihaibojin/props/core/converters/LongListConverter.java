@@ -25,6 +25,7 @@ import java.util.List;
  * separator can be configured by overriding {@link ListConverter#separator()}.
  */
 public interface LongListConverter extends PropTypeConverter<List<Long>>, ListConverter {
+
   @Override
   default List<Long> decode(String value) {
     return splitStringAsNumbers(value, separator(), Number::longValue);

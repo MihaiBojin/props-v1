@@ -21,6 +21,7 @@ package com.mihaibojin.props.core;
  * AbstractProp#validateBeforeGet()}.
  */
 public class ValidationException extends RuntimeException {
+
   private static final long serialVersionUID = -1203249458144372108L;
 
   public ValidationException(String message) {

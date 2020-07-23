@@ -25,6 +25,7 @@ import com.mihaibojin.props.core.converters.DoubleConverter;
  * type.
  */
 public abstract class AbstractDoubleProp extends AbstractProp<Double> implements DoubleConverter {
+
   protected AbstractDoubleProp(
       String key, Double defaultValue, String description, boolean isRequired, boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);
