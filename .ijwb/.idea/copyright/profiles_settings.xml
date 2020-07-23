@@ -3,6 +3,9 @@
     <module2copyright>
       <element module="Project Files" copyright="Apache 2.0 - Mihai Bojin" />
     </module2copyright>
+    <LanguageOptions name="ActionScript">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
     <LanguageOptions name="CSS">
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>
@@ -10,7 +13,13 @@
       <option name="fileTypeOverride" value="1" />
       <option name="prefixLines" value="false" />
     </LanguageOptions>
+    <LanguageOptions name="JSX Harmony">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
     <LanguageOptions name="Less">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="MXML">
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>
     <LanguageOptions name="Properties">
@@ -21,6 +30,16 @@
     </LanguageOptions>
     <LanguageOptions name="Sass">
       <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="TypeScript">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="TypeScript JSX">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="1" />
+      <option name="prefixLines" value="false" />
     </LanguageOptions>
   </settings>
 </component>

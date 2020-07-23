@@ -21,8 +21,6 @@
         <option value="org.jetbrains.kotlin.idea.run.KotlinJUnitRunConfigurationProducer" />
         <option value="org.jetbrains.kotlin.idea.run.KotlinPatternConfigurationProducer" />
         <option value="org.jetbrains.kotlin.idea.run.KotlinRunConfigurationProducer" />
-        <option value="org.jetbrains.kotlin.idea.run.KotlinTestClassGradleConfigurationProducer" />
-        <option value="org.jetbrains.kotlin.idea.run.KotlinTestMethodGradleConfigurationProducer" />
         <option value="org.jetbrains.plugins.gradle.execution.GradleGroovyScriptRunConfigurationProducer" />
         <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInDirectoryGradleConfigurationProducer" />
         <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInPackageGradleConfigurationProducer" />
