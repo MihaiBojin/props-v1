@@ -291,9 +291,7 @@ public class Props implements AutoCloseable {
   /** Refreshes values from all the registered {@link Resolver}s. */
   private void refreshResolvers(Map<String, Resolver> resolvers) {
     Set<? extends Prop<?>> toUpdate =
-        resolvers
-            .entrySet()
-            .parallelStream()
+        resolvers.entrySet().parallelStream()
             .filter(r -> r.getValue().isReloadable())
             .map(Props::safeReload)
             .flatMap(keys -> keys.stream().map(boundProps::get).filter(Objects::nonNull))

@@ -156,7 +156,8 @@ public class ExtendedTypesExamplesTest {
       // ensure that the encode() function is an inverse of decode()
       if (!Arrays.equals(value, decode(encode(value)))) {
         throw new IllegalStateException(
-            "A value that is encoded and subsequently decoded should result in the same original value");
+            "A value that is encoded and subsequently decoded should result in the same original"
+                + " value");
       }
     }
   }
@@ -188,7 +189,8 @@ public class ExtendedTypesExamplesTest {
       // this should fail because of the bad encode() method above
       if (!Arrays.equals(value, decode(encode(value)))) {
         throw new IllegalStateException(
-            "A value that is encoded and subsequently decoded should result in the same original value");
+            "A value that is encoded and subsequently decoded should result in the same original"
+                + " value");
       }
     }
   }
