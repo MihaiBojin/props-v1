@@ -13,7 +13,7 @@ default: build
 
 # Determine the current commit's git hash and identify any version tags
 GITHASH := $(shell git log -n1 --pretty='%H')
-VERSION_TAG=$(shell git describe --exact-match --tags "$(GITHASH)" 2>/dev/null)
+VERSION_TAG := $(shell git describe --exact-match --tags "$(GITHASH)" 2>/dev/null)
 
 .PHONY: clean
 clean: jabba
@@ -75,7 +75,7 @@ endif
 
 .PHONY: assemble-maven
 assemble-maven: jabba
-ifeq (, $(shell cat java/central-sync/VERSION))
+ifeq (0.0.0,$(shell cat java/central-sync/VERSION))
 	$(error "Before running this target, make sure to generate a VERSION file with the _generate-pom-version_ target")
 endif
 	@echo ""
@@ -93,6 +93,21 @@ endif
 	@echo ""
 	@echo "==> Deploying JAR artifacts to Maven Central"
 	bazelisk run //java/central-sync:deploy-maven -- release --gpg
+
+.PHONY: javadoc
+BASEDIR:=$(shell pwd)
+TMPDIR := $(shell mktemp -d)
+javadoc:
+	@echo ""
+	@echo "==> Updating the project's JavaDocs"
+	@bazelisk build //java/central-sync:assemble-maven
+
+	@echo "==> Unpacking javadocs"
+	cp bazel-bin/java/central-sync/com.mihaibojin.props:props-core-javadoc.jar $(TMPDIR)/javadoc.jar
+	cd $(TMPDIR) && jar xf javadoc.jar
+	mv $(TMPDIR)/props-core/* $(BASEDIR)/docs/javadoc/
+	cp $(BASEDIR)/docs/javadoc_stylesheet.css $(BASEDIR)/docs/javadoc/stylesheet.css
+	rm -rf $(TMPDIR)
 
 .PHONY: git-hooks
 git-hooks:

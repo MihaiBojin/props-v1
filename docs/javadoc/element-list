@@ -1,0 +1,6 @@
+module:com.mihaibojin.props.core
+com.mihaibojin.props.core
+com.mihaibojin.props.core.annotations
+com.mihaibojin.props.core.converters
+com.mihaibojin.props.core.resolvers
+com.mihaibojin.props.core.types

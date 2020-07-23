@@ -202,6 +202,11 @@ These examples include code samples for the following features:
 - retrieving prop values after a resolver update
 
 
+## Javadocs
+
+You can find a copy of the latest Javadocs, [here](javadoc/).
+
+
 # Contributing to the project
 
 Please see the [contributor guide](https://github.com/MihaiBojin/props/blob/master/CONTRIBUTING.md).
