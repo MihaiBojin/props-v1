@@ -3,11 +3,21 @@ directories:
   # By default, we've added your entire workspace ('.')
   .
 
+test_sources:
+  java/core/src/test/java/**
+
+workspace_type: java
+
+java_language_level: 11
+
 # Automatically includes all relevant targets under the 'directories' above
 derive_targets_from_directories: true
 
 targets:
-  # If source code isn't resolving, add additional targets that compile it here
+  //java/core/src/main:all
+  //java/core/src/test:all
+  //java/benchmark/src/main:all
+  //java/central-sync:all
 
 additional_languages:
   # Uncomment any additional languages you want supported
