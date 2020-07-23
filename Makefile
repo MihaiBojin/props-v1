@@ -19,6 +19,7 @@ VERSION_TAG=$(shell git describe --exact-match --tags "$(GITHASH)" 2>/dev/null)
 clean: jabba
 	@echo "==> Cleaning project artifacts and metadata"
 	bazelisk clean
+	rm -rf com/ infer-out/ module-info.class
 
 .PHONY: build
 build: jabba
