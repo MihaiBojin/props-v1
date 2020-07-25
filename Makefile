@@ -41,13 +41,15 @@ fmt:
 
 	@echo ""
 	@echo "==> Formatting JAVA files..."
-	bazelisk run //:google-java-format
+	bazelisk run //props-java-core/src/main:google-java-format
+	bazelisk run //props-java-benchmark/src/main:google-java-format
 
 .PHONY: fmtcheck
 fmtcheck:
 	@echo ""
 	@echo "==> Ensuring that the JAVA code is properly formatted..."
-	bazelisk build //:google-java-format-check
+	bazelisk run //props-java-core/src/main:google-java-format-check
+	bazelisk run //props-java-benchmark/src/main:google-java-format-check
 
 #	TODO(mihaibojin): Re-enable once the segfault is fixed
 #	@echo ""
@@ -167,7 +169,7 @@ ifeq (, $(shell which infer))
 	ln -sf $(shell which infer) $(INFER)/bin/infer
 endif
 
-else ifeq (linux, $(OS_NAME))
+else ifeq (linux64, $(OS_NAME))
 # Linux
 ifeq (, $(wildcard $(INFER)/bin/infer))
 	mkdir -p lib
