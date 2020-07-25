@@ -18,9 +18,7 @@ package com.mihaibojin.props.core.converters;
 
 import java.nio.file.Path;
 
-/**
- * Converter that returns the inputted {@link String}.
- */
+/** Converter that returns the inputted {@link String}. */
 public interface PathConverter extends Converter<Path> {
 
   /**
@@ -28,7 +26,6 @@ public interface PathConverter extends Converter<Path> {
    * System.getProperty("user.home")</code>.
    */
   boolean expandUserHomeDir();
-
 
   /**
    * Parses the specified input string into a <code>Path</code>.

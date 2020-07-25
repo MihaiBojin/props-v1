@@ -21,9 +21,7 @@ import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseChron
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-/**
- * Converter that casts the inputted {@link String} to an {@link ChronoUnit} value.
- */
+/** Converter that casts the inputted {@link String} to an {@link ChronoUnit} value. */
 public interface ChronoUnitConverter extends Converter<ChronoUnit> {
 
   @Override

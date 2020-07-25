@@ -24,127 +24,81 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Helper class that makes the API a little bit nicer, e.g.:
- *
- * <code>
+ * Helper class that makes the API a little bit nicer, e.g.: <code>
  * Prop&lt;Boolean&gt; booleanProp = Props.factory().build().prop("key", Converters.bool());
  * </code>
  */
 public class Cast {
 
-  /**
-   * Returns <code>Converter&lt;Boolean&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Boolean&gt;</code>. */
   public static Converter<Boolean> asBoolean() {
-    return new BooleanConverter() {
-    };
+    return new BooleanConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;ChronoUnit&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;ChronoUnit&gt;</code>. */
   public static Converter<ChronoUnit> asChronoUnit() {
-    return new ChronoUnitConverter() {
-    };
+    return new ChronoUnitConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Date&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Date&gt;</code>. */
   public static Converter<Date> asDate() {
-    return new DateConverter() {
-    };
+    return new DateConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Double&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Double&gt;</code>. */
   public static Converter<Double> asDouble() {
-    return new DoubleConverter() {
-    };
+    return new DoubleConverter() {};
   }
 
-
-  /**
-   * Returns <code>Converter&lt;Duration&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Duration&gt;</code>. */
   public static Converter<Duration> asDuration() {
-    return new DurationConverter() {
-    };
+    return new DurationConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Float&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Float&gt;</code>. */
   public static Converter<Float> asFloat() {
-    return new FloatConverter() {
-    };
+    return new FloatConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Instant&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Instant&gt;</code>. */
   public static Converter<Instant> asInstant() {
-    return new InstantConverter() {
-    };
+    return new InstantConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Integer&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Integer&gt;</code>. */
   public static Converter<Integer> asInteger() {
-    return new IntegerConverter() {
-    };
+    return new IntegerConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;List&lt;Double&gt;&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;List&lt;Double&gt;&gt;</code>. */
   public static Converter<List<Double>> asListOfDouble() {
-    return new ListOfDoubleConverter() {
-    };
+    return new ListOfDoubleConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;List&lt;Float&gt;&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;List&lt;Float&gt;&gt;</code>. */
   public static Converter<List<Float>> asListOfFloat() {
-    return new ListOfFloatConverter() {
-    };
+    return new ListOfFloatConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;List&lt;Integer&gt;&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;List&lt;Integer&gt;&gt;</code>. */
   public static Converter<List<Integer>> asListOfInteger() {
-    return new ListOfIntegerConverter() {
-    };
+    return new ListOfIntegerConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;List&lt;Long&gt;&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;List&lt;Long&gt;&gt;</code>. */
   public static Converter<List<Long>> asListOfLong() {
-    return new ListOfLongConverter() {
-    };
+    return new ListOfLongConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;List&lt;String&gt;&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;List&lt;String&gt;&gt;</code>. */
   public static Converter<List<String>> asListOfString() {
-    return new ListOfStringConverter() {
-    };
+    return new ListOfStringConverter() {};
   }
 
-  /**
-   * Returns <code>Converter&lt;Long&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Long&gt;</code>. */
   public static Converter<Long> asLong() {
-    return new LongConverter() {
-    };
+    return new LongConverter() {};
   }
-
 
   /**
    * Returns <code>Converter&lt;NumericDuration&gt;</code>, where the unit is {@link
@@ -163,9 +117,7 @@ public class Cast {
     return (NumericDurationConverter) () -> unit;
   }
 
-  /**
-   * Returns <code>Converter&lt;Path&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;Path&gt;</code>. */
   public static Converter<Path> asPath() {
     return asPath(true);
   }
@@ -179,11 +131,8 @@ public class Cast {
     return (PathConverter) () -> expandHomeDirectory;
   }
 
-  /**
-   * Returns <code>Converter&lt;String&gt;</code>.
-   */
+  /** Returns <code>Converter&lt;String&gt;</code>. */
   public static Converter<String> asString() {
-    return new StringConverter() {
-    };
+    return new StringConverter() {};
   }
 }

@@ -21,9 +21,7 @@ import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseInsta
 import java.util.Date;
 import java.util.Optional;
 
-/**
- * Converter that casts the inputted {@link String} to an {@link Date} value.
- */
+/** Converter that casts the inputted {@link String} to an {@link Date} value. */
 public interface DateConverter extends Converter<Date> {
 
   @Override

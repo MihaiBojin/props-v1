@@ -16,9 +16,7 @@
 
 package com.mihaibojin.props.core.converters;
 
-/**
- * Converter that casts the inputted {@link String} to a {@link Boolean} value.
- */
+/** Converter that casts the inputted {@link String} to a {@link Boolean} value. */
 public interface BooleanConverter extends Converter<Boolean> {
 
   @Override

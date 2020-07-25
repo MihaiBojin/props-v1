@@ -92,8 +92,7 @@ public class Props implements AutoCloseable {
   }
 
   /**
-   * Safely reload all the values managed by the specified {@link Resolver} and logs any
-   * exceptions.
+   * Safely reload all the values managed by the specified {@link Resolver} and logs any exceptions.
    */
   private static Set<String> safeReload(Entry<String, Resolver> res) {
     try {
@@ -104,9 +103,7 @@ public class Props implements AutoCloseable {
     return Set.of();
   }
 
-  /**
-   * Convenience method for configuring {@link Props} registry objects.
-   */
+  /** Convenience method for configuring {@link Props} registry objects. */
   public static Factory factory() {
     return new Factory();
   }
@@ -116,14 +113,12 @@ public class Props implements AutoCloseable {
    *
    * <p>If a non-null <code>resolverId</code> is specified, it will link the prop to that resolver.
    *
-   * @throws BindException            if attempting to bind a {@link Prop} for a key which was
-   *                                  already bound to another object. This is to encourage
-   *                                  efficiency and define a single object per key, keeping memory
-   *                                  usage low(er). Use the {@link #retrieveProp(String)} and
-   *                                  {@link #retrieve(String)} methods to get a pre-existing
-   *                                  instance.
+   * @throws BindException if attempting to bind a {@link Prop} for a key which was already bound to
+   *     another object. This is to encourage efficiency and define a single object per key, keeping
+   *     memory usage low(er). Use the {@link #retrieveProp(String)} and {@link #retrieve(String)}
+   *     methods to get a pre-existing instance.
    * @throws IllegalArgumentException if the specified <code>resolverId</code> is not known to the
-   *                                  registry.
+   *     registry.
    */
   public <T, R extends Prop<T>> R bind(R prop, @Nullable String resolverId) {
     Prop<?> oldProp = boundProps.putIfAbsent(prop.key(), prop);
@@ -199,9 +194,7 @@ public class Props implements AutoCloseable {
     return false;
   }
 
-  /**
-   * Search all resolvers for a value.
-   */
+  /** Search all resolvers for a value. */
   <T> Optional<T> resolveProp(Prop<T> prop, @Nullable String resolverId) {
     return resolveByKey(prop.key(), prop, resolverId);
   }
@@ -211,8 +204,7 @@ public class Props implements AutoCloseable {
    *
    * <p>If a <code>resolverId</code> is specified, only search the matching resolver.
    */
-  <T> Optional<T> resolveByKey(
-      String key, Converter<T> converter, @Nullable String resolverId) {
+  <T> Optional<T> resolveByKey(String key, Converter<T> converter, @Nullable String resolverId) {
     if (!waitForInitialLoad()) {
       return Optional.empty();
     }
@@ -246,7 +238,7 @@ public class Props implements AutoCloseable {
    * found.
    *
    * @throws IllegalArgumentException if the specified id is not known to the current {@link Props}
-   *                                  registry
+   *     registry
    */
   private void validateResolver(String resolverId) {
     if (!resolvers.containsKey(resolverId)) {
@@ -296,9 +288,7 @@ public class Props implements AutoCloseable {
     }
   }
 
-  /**
-   * Refreshes values from all the registered {@link Resolver}s.
-   */
+  /** Refreshes values from all the registered {@link Resolver}s. */
   private void refreshResolvers(Map<String, Resolver> resolvers) {
     Set<? extends Prop<?>> toUpdate =
         resolvers.entrySet().parallelStream()
@@ -330,23 +320,17 @@ public class Props implements AutoCloseable {
     }
   }
 
-  /**
-   * Convenience method for building string {@link Prop}s.
-   */
+  /** Convenience method for building string {@link Prop}s. */
   public Builder<String> prop(String key) {
     return new Builder<>(key, Cast.asString());
   }
 
-  /**
-   * Convenience method for building {@link Prop}s.
-   */
+  /** Convenience method for building {@link Prop}s. */
   public <T> Builder<T> prop(String key, Converter<T> converter) {
     return new Builder<>(key, converter);
   }
 
-  /**
-   * Factory class for building {@link Props} registry classes.
-   */
+  /** Factory class for building {@link Props} registry classes. */
   public static class Factory {
 
     private final LinkedHashMap<String, Resolver> resolvers = new LinkedHashMap<>();
@@ -354,20 +338,15 @@ public class Props implements AutoCloseable {
     private Duration shutdownGracePeriod = Duration.ofSeconds(30);
     private boolean shouldRegisterShutdownHook = true;
 
-    private Factory() {
-    }
+    private Factory() {}
 
-    /**
-     * Adds a resolver and identifies it by its {@link Resolver#id()}.
-     */
+    /** Adds a resolver and identifies it by its {@link Resolver#id()}. */
     public Factory withResolver(Resolver resolver) {
       resolvers.put(resolver.id(), resolver);
       return this;
     }
 
-    /**
-     * Adds a resolver and identifies it by its {@link Resolver#id()}.
-     */
+    /** Adds a resolver and identifies it by its {@link Resolver#id()}. */
     public Factory withResolvers(Collection<Resolver> resolvers) {
       resolvers.forEach(r -> this.resolvers.put(r.id(), r));
       return this;
@@ -401,9 +380,7 @@ public class Props implements AutoCloseable {
       return this;
     }
 
-    /**
-     * Registers a shutdown hook.
-     */
+    /** Registers a shutdown hook. */
     void registerShutdownHook(Props props) {
       Runtime.getRuntime().addShutdownHook(new Thread(props::close));
     }
@@ -412,7 +389,7 @@ public class Props implements AutoCloseable {
      * Creates the {@link Props} object.
      *
      * @throws IllegalStateException if the method is called without registering any {@link
-     *                               Resolver}s
+     *     Resolver}s
      */
     public Props build() {
       if (resolvers.isEmpty()) {
@@ -429,21 +406,16 @@ public class Props implements AutoCloseable {
     }
   }
 
-  /**
-   * Builder class for creating custom {@link Prop}s from the current {@link Props} registry.
-   */
+  /** Builder class for creating custom {@link Prop}s from the current {@link Props} registry. */
   public class Builder<T> {
 
     public final String key;
     public final Converter<T> converter;
-    @Nullable
-    private T defaultValue;
-    @Nullable
-    private String description;
+    @Nullable private T defaultValue;
+    @Nullable private String description;
     private boolean isRequired;
     private boolean isSecret;
-    @Nullable
-    private String resolverId;
+    @Nullable private String resolverId;
 
     private Builder(String key, Converter<T> converter) {
       this.key = key;
@@ -458,9 +430,7 @@ public class Props implements AutoCloseable {
       }
     }
 
-    /**
-     * Specifies the resolver (by id) to use for retrieving this property.
-     */
+    /** Specifies the resolver (by id) to use for retrieving this property. */
     public Builder<T> resolver(String resolverId) {
       validateResolver(resolverId);
       this.resolverId = resolverId;

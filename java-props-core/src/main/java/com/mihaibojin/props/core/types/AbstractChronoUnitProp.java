@@ -27,9 +27,11 @@ import java.time.temporal.ChronoUnit;
  */
 public abstract class AbstractChronoUnitProp extends AbstractProp<ChronoUnit>
     implements ChronoUnitConverter {
-  
   protected AbstractChronoUnitProp(
-      String key, ChronoUnit defaultValue, String description, boolean isRequired,
+      String key,
+      ChronoUnit defaultValue,
+      String description,
+      boolean isRequired,
       boolean isSecret) {
     super(key, defaultValue, description, isRequired, isSecret);
   }

@@ -22,9 +22,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-/**
- * Converter that casts the inputted {@link String} to an {@link Duration} value.
- */
+/** Converter that casts the inputted {@link String} to an {@link Duration} value. */
 public interface NumericDurationConverter extends Converter<Duration> {
 
   @Override
