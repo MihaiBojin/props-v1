@@ -2,11 +2,11 @@ load("@com_github_mihaibojin_bazel_java_rules//junit5:rules.bzl", "junit5_test")
 
 junit5_test(
     name = "AllTests",
-    srcs = glob(["**/*.java"]),
+    srcs = glob(["java/**/*.java"]),
     resources = glob(["resources/**"]),
     test_package = "com.mihaibojin",
     deps = [
-        "//java/core/src/main:props-core",
+        "//java-props-core/src/main:props-core",
     ],
 )
 
@@ -16,6 +16,6 @@ junit5_test(
     resources = glob(["resources/**"]),
     test_package = "examples",
     deps = [
-        "//java/core/src/main:props-core",
+        "//java-props-core/src/main:props-core",
     ],
 )

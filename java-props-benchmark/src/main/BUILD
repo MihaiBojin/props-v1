@@ -2,7 +2,7 @@ load("@rules_jmh//:defs.bzl", "jmh_java_benchmarks")
 
 jmh_java_benchmarks(
     name = "jmh",
-    srcs = glob(["java/benchmark/**/*.java"]),
+    srcs = glob(["java/**/*.java"]),
     resources = glob(["resources/**"]),
-    deps = ["//java/core/src/main:props-core"],
+    deps = ["//java-props-core/src/main:props-core"],
 )
