@@ -41,15 +41,15 @@ fmt:
 
 	@echo ""
 	@echo "==> Formatting JAVA files..."
-	bazelisk run //props-java-core/src/main:google-java-format
-	bazelisk run //props-java-benchmark/src/main:google-java-format
+	bazelisk run //java-props-core/src/main:google-java-format
+	bazelisk run //java-props-benchmark/src/main:google-java-format
 
 .PHONY: fmtcheck
 fmtcheck:
 	@echo ""
 	@echo "==> Ensuring that the JAVA code is properly formatted..."
-	bazelisk run //props-java-core/src/main:google-java-format-check
-	bazelisk run //props-java-benchmark/src/main:google-java-format-check
+	bazelisk run //java-props-core/src/main:google-java-format-check
+	bazelisk run //java-props-benchmark/src/main:google-java-format-check
 
 #	TODO(mihaibojin): Re-enable once the segfault is fixed
 #	@echo ""
