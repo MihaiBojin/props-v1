@@ -16,11 +16,10 @@ java_library(
     plugins = ["nullaway"],
     resources = glob(["resources/**"]),
     tags = ["maven_coordinates=com.mihaibojin.props:props-core:{pom_version}"],
-    visibility = ["//visibility:public"],
-    #    visibility = [
-    #        "//java-props-benchmark/src/main:__subpackages__",
-    #        "//java-props-core/src/test:__subpackages__",
-    #    ],
+    visibility = [
+        "//java-props-benchmark/src/main:__subpackages__",
+        "//java-props-core/src/test:__subpackages__",
+    ],
 )
 
 nullaway_plugin(name = "nullaway")
@@ -28,10 +27,10 @@ nullaway_plugin(name = "nullaway")
 checkstyle(
     name = "checkstyle",
     srcs = glob(["java/**/*.java"]),
-    checkstyle_suppressions = "//third_party/checkstyle:checkstyle-suppressions.xml",
-    checkstyle_xml = "//third_party/checkstyle:checkstyle.xml",
-    checkstyle_xpath_suppressions = "//third_party/checkstyle:checkstyle-xpath-suppressions.xml",
-    license_header = "//third_party/checkstyle:license-header.txt",
+    checkstyle_suppressions = "//third-party/checkstyle:checkstyle-suppressions.xml",
+    checkstyle_xml = "//third-party/checkstyle:checkstyle.xml",
+    checkstyle_xpath_suppressions = "//third-party/checkstyle:checkstyle-xpath-suppressions.xml",
+    license_header = "//third-party/checkstyle:license-header.txt",
 )
 
 java_format(
