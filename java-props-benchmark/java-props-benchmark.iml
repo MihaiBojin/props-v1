@@ -9,5 +9,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name=".workspace" />
+    <orderEntry type="library" name="jmh-core-1.23_f1a187ac" level="project" />
+    <orderEntry type="library" name="jmh-gen_d64c7845" level="project" />
   </component>
 </module>

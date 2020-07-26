@@ -22,5 +22,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="hamcrest-2.2_360d6a90" level="project" />
+    <orderEntry type="library" name="jmh-core-1.23_f1a187ac" level="project" />
+    <orderEntry type="library" name="junit-jupiter-api-5.6.2_d6a3e5c4" level="project" />
+    <orderEntry type="library" name="mockito-core-3.3.3_dd77f65b" level="project" />
+    <orderEntry type="library" name="jmh-gen_d64c7845" level="project" />
   </component>
 </module>
