@@ -19,13 +19,14 @@ package com.mihaibojin.props.core;
 import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.Converter;
 import java.util.Optional;
+import java.util.concurrent.Flow.Publisher;
 
 /**
  * Interface with common property methods.
  *
  * @param <T> the property's type
  */
-public interface Prop<T> extends Converter<T> {
+public interface Prop<T> extends Converter<T>, Publisher<T> {
 
   /**
    * Identifies the {@link Prop}.

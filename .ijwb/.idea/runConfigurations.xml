@@ -13,9 +13,21 @@
         <option value="com.intellij.execution.junit.TestMethodConfigurationProducer" />
         <option value="com.intellij.execution.junit.UniqueIdConfigurationProducer" />
         <option value="com.intellij.execution.junit.testDiscovery.JUnitTestDiscoveryConfigurationProducer" />
+        <option value="com.intellij.javascript.jest.JestRunConfigurationProducer" />
+        <option value="com.intellij.javascript.protractor.ProtractorRunConfigurationProducer" />
+        <option value="com.intellij.lang.javascript.buildTools.grunt.rc.GruntRunConfigurationProducer" />
+        <option value="com.intellij.lang.javascript.buildTools.gulp.rc.GulpRunConfigurationProducer" />
+        <option value="com.intellij.lang.javascript.buildTools.npm.rc.NpmRunConfigurationProducer" />
         <option value="org.jetbrains.kotlin.idea.run.KotlinJUnitRunConfigurationProducer" />
         <option value="org.jetbrains.kotlin.idea.run.KotlinPatternConfigurationProducer" />
         <option value="org.jetbrains.kotlin.idea.run.KotlinRunConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.GradleGroovyScriptRunConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInDirectoryGradleConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInPackageGradleConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.test.runner.PatternGradleConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestMethodGradleConfigurationProducer" />
+        <option value="org.jetbrains.plugins.gradle.service.execution.GradleRuntimeConfigurationProducer" />
       </set>
     </option>
   </component>

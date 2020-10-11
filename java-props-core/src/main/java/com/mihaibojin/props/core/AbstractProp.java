@@ -20,7 +20,11 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 import com.mihaibojin.props.core.annotations.Nullable;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
 
 public abstract class AbstractProp<T> implements Prop<T> {
 
@@ -86,7 +90,40 @@ public abstract class AbstractProp<T> implements Prop<T> {
 
     synchronized (this) {
       currentValue = updateValue;
+      subscriptions.forEach(s -> s.push(currentValue));
     }
+  }
+
+  final Set<PropSubscription> subscriptions = new HashSet<>();
+
+  private class PropSubscription implements Subscription {
+    private final Subscriber<? super T> subscriber;
+
+    public PropSubscription(Subscriber<? super T> subscriber) {
+      this.subscriber = subscriber;
+    }
+
+    @Override
+    public void request(long n) {
+      // nothing to do, we're only pushing 1 value at a time
+    }
+
+    public void push(@Nullable T value) {
+      subscriber.onNext(value);
+    }
+
+    @Override
+    public void cancel() {
+      subscriptions.remove(this);
+      subscriber.onComplete();
+    }
+  }
+
+  @Override
+  public void subscribe(Subscriber<? super T> subscriber) {
+    PropSubscription subscription = new PropSubscription(subscriber);
+    subscriptions.add(subscription);
+    subscriber.onSubscribe(subscription);
   }
 
   /** Retrieve this property's value. */
