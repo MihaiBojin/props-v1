@@ -28,12 +28,13 @@ import com.mihaibojin.props.core.resolvers.InMemoryResolver;
 import com.mihaibojin.props.core.types.AbstractStringProp;
 import java.time.Duration;
 import java.util.ArrayDeque;
+import java.util.concurrent.Flow;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AsyncUpdateExamplesTest {
+public class SubscribeToUpdatesExamplesTest {
   private static final String KEY = "async";
   private Props props;
   private InMemoryResolver resolver;
@@ -62,12 +63,43 @@ public class AsyncUpdateExamplesTest {
     for (int i = 0; i < elements; i++) {
       String toUpdate = "value" + i;
       resolver.set(KEY, toUpdate);
-      verify(prop, timeout(10000).times(1)).validateBeforeSet(toUpdate);
+      verify(prop, timeout(1000).times(1)).validateBeforeSet(toUpdate);
     }
 
     // ASSERT
-    assertThat(data, hasSize(elements));
-    assertThat(data.getLast(), equalTo("value" + (elements - 1)));
+    assertThat("All the updates were received", data, hasSize(elements));
+    assertThat(
+        "The last update matches the expected value",
+        data.getLast(),
+        equalTo("value" + (elements - 1)));
+  }
+
+  @Test
+  void testUnSubscribe() {
+    // ARRANGE
+
+    // initialize consumer
+    ArrayDeque<Object> data = new ArrayDeque<>();
+    Consumer<String> consumer = data::add;
+
+    StringProp prop = spy(new StringProp(KEY));
+    Flow.Subscription subscription = prop.onUpdate(consumer, e -> {});
+    props.bind(prop);
+
+    // ACT
+    resolver.set(KEY, "update1");
+    verify(prop, timeout(1000).times(1)).validateBeforeSet("update1");
+
+    subscription.cancel();
+    resolver.set(KEY, "update2");
+    verify(prop, timeout(1000).times(1)).validateBeforeSet("update2");
+
+    // ASSERT
+    assertThat(prop.value().orElse(null), equalTo("update2"));
+    assertThat(
+        "The last received update was the value prior to canceling the subscription",
+        data.getLast(),
+        equalTo("update1"));
   }
 
   @AfterEach
