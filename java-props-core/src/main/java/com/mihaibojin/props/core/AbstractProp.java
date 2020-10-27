@@ -20,10 +20,11 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 import com.mihaibojin.props.core.annotations.Nullable;
-import java.util.HashSet;
+import com.mihaibojin.props.core.async.UpdateSubscriber;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.SubmissionPublisher;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public abstract class AbstractProp<T> implements Prop<T> {
@@ -34,8 +35,6 @@ public abstract class AbstractProp<T> implements Prop<T> {
   private final boolean isRequired;
   private final boolean isSecret;
   @Nullable private volatile T currentValue;
-
-  private final Set<Subscription> subscriptions = new HashSet<>();
 
   /**
    * Constructs a new property class.
@@ -95,7 +94,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
           .execute(
               () -> {
                 // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
-                subscriptions.forEach(s -> s.subscriber.onError(e));
+                publisher().closeExceptionally(e);
               });
       throw e;
     }
@@ -109,7 +108,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
         .execute(
             () -> {
               // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
-              subscriptions.forEach(s -> s.push(updateValue));
+              publisher().submit(updateValue);
             });
   }
 
@@ -138,12 +137,23 @@ public abstract class AbstractProp<T> implements Prop<T> {
     return result;
   }
 
+  private final AtomicReference<SubmissionPublisher<T>> publisher = new AtomicReference<>();
+
+  /** Returns the {@link SubmissionPublisher} instance to use for the current Prop. */
+  private SubmissionPublisher<T> publisher() {
+    SubmissionPublisher<T> pub = publisher.get();
+    if (isNull(pub)) {
+      pub = new SubmissionPublisher<>();
+      publisher.weakCompareAndSetVolatile(null, pub);
+    }
+
+    return pub;
+  }
+
   /** Registers value and error consumers, which are called every time the prop is updated. */
   @Override
-  public Subscription onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
-    Subscription sub = new Subscription(new Subscriber<>(consumer, errConsumer));
-    subscriptions.add(sub);
-    return sub;
+  public void onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
+    publisher().subscribe(new UpdateSubscriber<>(consumer, errConsumer));
   }
 
   @Override
@@ -185,60 +195,5 @@ public abstract class AbstractProp<T> implements Prop<T> {
     }
 
     return format("Prop{%s=null}", key);
-  }
-
-  private static class Subscriber<T> implements java.util.concurrent.Flow.Subscriber<T> {
-
-    private final Consumer<T> consumer;
-    private final Consumer<Throwable> errConsumer;
-
-    private Subscriber(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
-      this.consumer = consumer;
-      this.errConsumer = errConsumer;
-    }
-
-    @Override
-    public void onSubscribe(java.util.concurrent.Flow.Subscription subscription) {
-      // NOT IMPLEMENTED, nothing to do
-    }
-
-    @Override
-    public void onNext(T item) {
-      consumer.accept(item);
-    }
-
-    @Override
-    public void onError(Throwable throwable) {
-      errConsumer.accept(throwable);
-    }
-
-    @Override
-    public void onComplete() {
-      // only called if the subscription is cancelled
-      // nothing to do
-    }
-  }
-
-  private class Subscription implements java.util.concurrent.Flow.Subscription {
-    private final java.util.concurrent.Flow.Subscriber<T> subscriber;
-
-    public Subscription(java.util.concurrent.Flow.Subscriber<T> subscriber) {
-      this.subscriber = subscriber;
-    }
-
-    @Override
-    public void request(long n) {
-      // nothing to do, we're only pushing 1 value at a time
-    }
-
-    public void push(@Nullable T value) {
-      subscriber.onNext(value);
-    }
-
-    @Override
-    public void cancel() {
-      subscriptions.remove(this);
-      subscriber.onComplete();
-    }
   }
 }

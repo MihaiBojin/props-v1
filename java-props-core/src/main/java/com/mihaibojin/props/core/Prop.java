@@ -19,7 +19,6 @@ package com.mihaibojin.props.core;
 import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.Converter;
 import java.util.Optional;
-import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
 
 /**
@@ -44,7 +43,7 @@ public interface Prop<T> extends Converter<T> {
    */
   Optional<T> value();
 
-  Subscription onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer);
+  void onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer);
 
   /**
    * Returns a short description explaining what this prop is used for.
