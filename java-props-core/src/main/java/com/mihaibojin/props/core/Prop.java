@@ -19,14 +19,15 @@ package com.mihaibojin.props.core;
 import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.Converter;
 import java.util.Optional;
-import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.Flow.Subscription;
+import java.util.function.Consumer;
 
 /**
  * Interface with common property methods.
  *
  * @param <T> the property's type
  */
-public interface Prop<T> extends Converter<T>, Publisher<T> {
+public interface Prop<T> extends Converter<T> {
 
   /**
    * Identifies the {@link Prop}.
@@ -42,6 +43,8 @@ public interface Prop<T> extends Converter<T>, Publisher<T> {
    * @throws ValidationException if the value could not be validated
    */
   Optional<T> value();
+
+  Subscription onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer);
 
   /**
    * Returns a short description explaining what this prop is used for.

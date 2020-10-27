@@ -49,13 +49,9 @@ public class InMemoryResolver implements Resolver {
   @Override
   public Set<String> reload() {
     synchronized (this) {
-      try {
-        // returns the keys which were updated since the last reload
-        return new HashSet<>(updatedKeys);
-      } finally {
-        // then clears the set
-        updatedKeys.clear();
-      }
+      Set<String> results = new HashSet<>(updatedKeys);
+      updatedKeys.clear();
+      return results;
     }
   }
 

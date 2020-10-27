@@ -127,7 +127,7 @@ public class Props implements AutoCloseable {
     }
 
     // NullAway does not recognize Objects.nonNull (https://github.com/uber/NullAway/issues/393)
-    if (resolverId != null) {
+    if (!Objects.isNull(resolverId)) {
       // only register the prop with a resolver, if the id is non-null and valid
       validateResolver(resolverId);
       propIdToResolver.put(prop.key(), resolverId);
@@ -190,7 +190,7 @@ public class Props implements AutoCloseable {
       return true;
     }
 
-    // otherwise return false, since to updates took place
+    // otherwise return false, since no updates took place
     return false;
   }
 

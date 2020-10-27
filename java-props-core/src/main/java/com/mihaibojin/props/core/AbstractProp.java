@@ -23,8 +23,8 @@ import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.Consumer;
 
 public abstract class AbstractProp<T> implements Prop<T> {
 
@@ -34,6 +34,8 @@ public abstract class AbstractProp<T> implements Prop<T> {
   private final boolean isRequired;
   private final boolean isSecret;
   @Nullable private volatile T currentValue;
+
+  private final Set<Subscription> subscriptions = new HashSet<>();
 
   /**
    * Constructs a new property class.
@@ -86,44 +88,29 @@ public abstract class AbstractProp<T> implements Prop<T> {
   /** Update this property's value. */
   void setValue(T updateValue) {
     // ensure the value is validated before it is set
-    validateBeforeSet(updateValue);
+    try {
+      validateBeforeSet(updateValue);
+    } catch (RuntimeException e) {
+      ForkJoinPool.commonPool()
+          .execute(
+              () -> {
+                // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
+                subscriptions.forEach(s -> s.subscriber.onError(e));
+              });
+      throw e;
+    }
 
     synchronized (this) {
       currentValue = updateValue;
-      subscriptions.forEach(s -> s.push(currentValue));
-    }
-  }
-
-  final Set<PropSubscription> subscriptions = new HashSet<>();
-
-  private class PropSubscription implements Subscription {
-    private final Subscriber<? super T> subscriber;
-
-    public PropSubscription(Subscriber<? super T> subscriber) {
-      this.subscriber = subscriber;
     }
 
-    @Override
-    public void request(long n) {
-      // nothing to do, we're only pushing 1 value at a time
-    }
-
-    public void push(@Nullable T value) {
-      subscriber.onNext(value);
-    }
-
-    @Override
-    public void cancel() {
-      subscriptions.remove(this);
-      subscriber.onComplete();
-    }
-  }
-
-  @Override
-  public void subscribe(Subscriber<? super T> subscriber) {
-    PropSubscription subscription = new PropSubscription(subscriber);
-    subscriptions.add(subscription);
-    subscriber.onSubscribe(subscription);
+    // hand over the update to be processed async
+    ForkJoinPool.commonPool()
+        .execute(
+            () -> {
+              // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
+              subscriptions.forEach(s -> s.push(updateValue));
+            });
   }
 
   /** Retrieve this property's value. */
@@ -149,6 +136,14 @@ public abstract class AbstractProp<T> implements Prop<T> {
     validateBeforeGet(result.orElse(null));
 
     return result;
+  }
+
+  /** Registers value and error consumers, which are called every time the prop is updated. */
+  @Override
+  public Subscription onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
+    Subscription sub = new Subscription(new Subscriber<>(consumer, errConsumer));
+    subscriptions.add(sub);
+    return sub;
   }
 
   @Override
@@ -190,5 +185,60 @@ public abstract class AbstractProp<T> implements Prop<T> {
     }
 
     return format("Prop{%s=null}", key);
+  }
+
+  private static class Subscriber<T> implements java.util.concurrent.Flow.Subscriber<T> {
+
+    private final Consumer<T> consumer;
+    private final Consumer<Throwable> errConsumer;
+
+    private Subscriber(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
+      this.consumer = consumer;
+      this.errConsumer = errConsumer;
+    }
+
+    @Override
+    public void onSubscribe(java.util.concurrent.Flow.Subscription subscription) {
+      // NOT IMPLEMENTED, nothing to do
+    }
+
+    @Override
+    public void onNext(T item) {
+      consumer.accept(item);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+      errConsumer.accept(throwable);
+    }
+
+    @Override
+    public void onComplete() {
+      // only called if the subscription is cancelled
+      // nothing to do
+    }
+  }
+
+  private class Subscription implements java.util.concurrent.Flow.Subscription {
+    private final java.util.concurrent.Flow.Subscriber<T> subscriber;
+
+    public Subscription(java.util.concurrent.Flow.Subscriber<T> subscriber) {
+      this.subscriber = subscriber;
+    }
+
+    @Override
+    public void request(long n) {
+      // nothing to do, we're only pushing 1 value at a time
+    }
+
+    public void push(@Nullable T value) {
+      subscriber.onNext(value);
+    }
+
+    @Override
+    public void cancel() {
+      subscriptions.remove(this);
+      subscriber.onComplete();
+    }
   }
 }
