@@ -43,6 +43,9 @@ public interface Prop<T> extends Converter<T> {
    */
   Optional<T> value();
 
+  @Nullable
+  T rawValue();
+
   void onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer);
 
   /**

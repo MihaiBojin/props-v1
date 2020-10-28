@@ -18,6 +18,7 @@ package com.mihaibojin.props.core;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.async.UpdateSubscriber;
@@ -76,7 +77,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
    *
    * @throws ValidationException when validation fails
    */
-  protected void validateBeforeGet(T value) {
+  protected void validateBeforeGet(@Nullable T value) {
     // if the Prop is required, a value must be available
     if (isRequired && isNull(value)) {
       throw new ValidationException(
@@ -128,13 +129,23 @@ public abstract class AbstractProp<T> implements Prop<T> {
    */
   @Override
   public Optional<T> value() {
-    Optional<T> result =
-        Optional.ofNullable(currentValue).or(() -> Optional.ofNullable(defaultValue));
+    return Optional.ofNullable(rawValue());
+  }
+
+  /** Returns the raw value of this prop. */
+  @Override
+  @Nullable
+  public T rawValue() {
+    T value;
+    if (nonNull(currentValue)) {
+      value = currentValue;
+    } else {
+      value = defaultValue;
+    }
 
     // ensure the Prop is in a valid state before returning it
-    validateBeforeGet(result.orElse(null));
-
-    return result;
+    validateBeforeGet(value);
+    return value;
   }
 
   private final AtomicReference<SubmissionPublisher<T>> publisher = new AtomicReference<>();
