@@ -302,8 +302,8 @@ public class Props implements AutoCloseable {
   /** Refreshes values from all the registered {@link Resolver}s. */
   private void refreshResolvers(Map<String, Resolver> resolvers) {
     // TODO(mihaibojin): this implementation is very naive and results in 9% of extra allocations
-    // in high traffic use-cases (many updates); replace the whole implementation with
-    // something more performant
+    //  in high traffic use-cases (many updates); replace the whole implementation with
+    //  something more performant
     Set<? extends Prop<?>> toUpdate =
         resolvers.entrySet().parallelStream()
             .filter(r -> r.getValue().isReloadable())
@@ -314,7 +314,7 @@ public class Props implements AutoCloseable {
             .collect(Collectors.toSet());
 
     // TODO(mihaibojin): in the future, this will be replace with a better mechanism that keeps
-    // track of which resolver owns each prop
+    //  track of which resolver owns each prop
     toUpdate.forEach(this::update);
   }
 

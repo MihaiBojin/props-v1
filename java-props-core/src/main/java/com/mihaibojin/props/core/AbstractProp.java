@@ -22,7 +22,6 @@ import static java.util.Objects.nonNull;
 
 import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -90,12 +89,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
     try {
       validateBeforeSet(updateValue);
     } catch (RuntimeException e) {
-      ForkJoinPool.commonPool()
-          .execute(
-              () -> {
-                // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
-                publisher().closeExceptionally(e);
-              });
+      publisher().closeExceptionally(e);
       throw e;
     }
 
@@ -103,13 +97,9 @@ public abstract class AbstractProp<T> implements Prop<T> {
       currentValue = updateValue;
     }
 
-    // hand over the update to be processed async
-    ForkJoinPool.commonPool()
-        .execute(
-            () -> {
-              // TODO: refactor to avoid update storms (e.g., ReactiveX.Window.Last)
-              publisher().submit(updateValue);
-            });
+    // TODO(mihaibojin): refactor to support the handling of update storms
+    //  (e.g., with ReactiveX.Window.Last / publish only the very last event in a window)
+    publisher().submit(updateValue);
   }
 
   /** Retrieve this property's value. */
@@ -150,13 +140,19 @@ public abstract class AbstractProp<T> implements Prop<T> {
   private final AtomicReference<SubmissionPublisher<T>> publisher = new AtomicReference<>();
 
   /** Returns the {@link SubmissionPublisher} instance to use for the current Prop. */
+  @SuppressWarnings("NullAway")
   private SubmissionPublisher<T> publisher() {
     SubmissionPublisher<T> pub = publisher.get();
     if (isNull(pub)) {
       pub = new SubmissionPublisher<>();
-      publisher.weakCompareAndSetVolatile(null, pub);
+      if (!publisher.compareAndSet(null, pub)) {
+        // if we've failed to set it, another thread has done so
+        // retrieve the latest and most correct value
+        pub = publisher.get();
+      }
     }
 
+    // NullAway does not like the code above, as it wrongly assumes publisher.get() can return null
     return pub;
   }
 

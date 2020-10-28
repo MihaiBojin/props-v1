@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import org.openjdk.jmh.infra.Blackhole;
 
 public class PubSubMain {
@@ -39,8 +38,11 @@ public class PubSubMain {
   // default sleep duration between phases
   public static final long SLEEP_MILLIS = 10_000;
 
+  // how many subscribers register for updates; set to a large number to overload the common FJ pool
+  public static final long MAX_SUBSCRIBERS = 250;
+
   // determines which parts of the benchmark run
-  public static final boolean RUN_SYNC = false;
+  public static final boolean RUN_SYNC = true;
   public static final boolean RUN_ASYNC = true;
 
   public static final String DUMMY = "01233456789";
@@ -79,7 +81,6 @@ public class PubSubMain {
         new Blackhole(
             "Today's password is swordfish. I understand instantiating Blackholes directly is"
                 + " dangerous.");
-    Consumer<String> consumer = blackhole::consume;
 
     // delimit the environment init phase
     sleep(SLEEP_MILLIS);
@@ -101,7 +102,7 @@ public class PubSubMain {
       int it = 0;
       while (System.currentTimeMillis() - now < 3 * SLEEP_MILLIS) {
         Prop<String> prop = allProps.get(Math.floorMod(it++, PROP_COUNT));
-        consumer.accept(prop.value());
+        blackhole.consume(prop.value());
       }
 
       // delimit the initial iteration phase
@@ -132,7 +133,9 @@ public class PubSubMain {
           String.format(
               "Subscribing a consumer to all defined Prop objects and monitoring for %dms...",
               3 * SLEEP_MILLIS));
-      allProps.forEach(p -> p.onUpdate(consumer, (e) -> {}));
+      for (int i = 0; i < MAX_SUBSCRIBERS; i++) {
+        allProps.forEach(p -> p.onUpdate(blackhole::consume, (e) -> {}));
+      }
 
       // monitor the system for a while, then exit
       sleep(3 * SLEEP_MILLIS);
