@@ -48,7 +48,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
     name = "com_github_mihaibojin_bazel_java_rules",
     remote = "https://github.com/MihaiBojin/bazel_java_rules",
-    commit = "e76e1bc54c9e646a6495d4c43ad870296ab15427",
+    commit = "48f849bf3a6ca6f6c85fc66d0834a84dd40cc8cb",
 )
 
 load("@com_github_mihaibojin_bazel_java_rules//google-java-format:workspace.bzl", "google_java_format_jar")
