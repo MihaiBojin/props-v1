@@ -36,16 +36,24 @@ public interface Prop<T> extends Converter<T> {
   String key();
 
   /**
+   * Returns the property's current value, wrapped in an Optional.
+   *
+   * @return the {@link Prop}'s current value, or an empty Optional if one could not be determined.
+   * @throws ValidationException if the value could not be validated
+   */
+  // TODO(mihaibojin): remove and refactor to using the raw value
+  Optional<T> maybeValue();
+
+  /**
    * Returns the property's current value.
    *
    * @return the {@link Prop}'s current value, or an empty Optional if one could not be determined.
    * @throws ValidationException if the value could not be validated
    */
-  Optional<T> value();
-
   @Nullable
-  T rawValue();
+  T value();
 
+  /** Allows the caller to subscribe to value updates (and any observed errors). */
   void onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer);
 
   /**

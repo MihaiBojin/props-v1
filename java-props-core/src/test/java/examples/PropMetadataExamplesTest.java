@@ -51,7 +51,7 @@ public class PropMetadataExamplesTest {
 
     Assertions.assertThrows(
         ValidationException.class,
-        aProp::value,
+        aProp::maybeValue,
         "Expecting prop to throw, since it is required but is missing a value");
   }
 
@@ -69,7 +69,7 @@ public class PropMetadataExamplesTest {
     RequiredProp aProp = props.bind(new RequiredProp("undefined.prop", "DEFAULT"));
 
     assertThat(
-        "Expecting the default value to be returned", aProp.value().get(), equalTo("DEFAULT"));
+        "Expecting the default value to be returned", aProp.maybeValue().get(), equalTo("DEFAULT"));
   }
 
   @Test
@@ -86,7 +86,7 @@ public class PropMetadataExamplesTest {
     Prop<String> aProp = props.prop("undefined.prop").defaultValue("DEFAULT").build();
 
     assertThat(
-        "Expecting the default value to be returned", aProp.value().get(), equalTo("DEFAULT"));
+        "Expecting the default value to be returned", aProp.maybeValue().get(), equalTo("DEFAULT"));
   }
 
   @Test
@@ -94,7 +94,7 @@ public class PropMetadataExamplesTest {
     // bind a prop for which we do not define a value, but define a default
     Prop<Integer> aProp = props.prop("int.prop", Cast.asInteger()).defaultValue(1).build();
 
-    assertThat("Expecting the default value to be returned", aProp.value().get(), equalTo(1));
+    assertThat("Expecting the default value to be returned", aProp.maybeValue().get(), equalTo(1));
   }
 
   @Test
@@ -109,7 +109,7 @@ public class PropMetadataExamplesTest {
     assertThat(
         "Expecting a redacted value",
         aProp.toString(),
-        containsString(aProp.redact(aProp.value().get())));
+        containsString(aProp.redact(aProp.maybeValue().get())));
   }
 
   private static class RequiredProp extends AbstractStringProp {

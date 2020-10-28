@@ -39,6 +39,10 @@ public class PubSubMain {
   // default sleep duration between phases
   public static final long SLEEP_MILLIS = 10_000;
 
+  // determines which parts of the benchmark run
+  public static final boolean RUN_SYNC = false;
+  public static final boolean RUN_ASYNC = true;
+
   public static final String DUMMY = "01233456789";
   public static final String DUMMY2 = "12334567890";
 
@@ -49,10 +53,17 @@ public class PubSubMain {
     sleep(2 * SLEEP_MILLIS);
 
     log("Initializing the environment...");
+
+    // cache key names to avoid recreating objects
+    String[] keys = new String[PROP_COUNT];
+    for (int i = 0; i < PROP_COUNT; i++) {
+      keys[i] = String.format("key%s", i);
+    }
+
     // create property values
     InMemoryResolver resolver = new InMemoryResolver();
     for (int i = 0; i < PROP_COUNT; i++) {
-      resolver.set(key(i), DUMMY);
+      resolver.set(keys[i], DUMMY);
     }
 
     // initialize the Props registry
@@ -74,49 +85,56 @@ public class PubSubMain {
     log("Initializing Prop objects...");
     List<Prop<String>> allProps = new ArrayList<>(PROP_COUNT);
     for (int i = 0; i < PROP_COUNT; i++) {
-      allProps.add(props.prop(key(i)).build());
+      allProps.add(props.prop(keys[i]).build());
     }
 
     // delimit the Prop init phase
     sleep(SLEEP_MILLIS);
 
-    log(
-        String.format(
-            "Iterating through props and reading their values for %dms...", 3 * SLEEP_MILLIS));
-    long now = System.currentTimeMillis();
-    int it = 0;
-    while (System.currentTimeMillis() - now < 3 * SLEEP_MILLIS) {
-      Prop<String> prop = allProps.get(Math.floorMod(it++, PROP_COUNT));
-      consumer.accept(prop.rawValue());
+    if (RUN_SYNC) {
+      log(
+          String.format(
+              "Iterating through props and reading their values for %dms...", 3 * SLEEP_MILLIS));
+      long now = System.currentTimeMillis();
+      int it = 0;
+      while (System.currentTimeMillis() - now < 3 * SLEEP_MILLIS) {
+        Prop<String> prop = allProps.get(Math.floorMod(it++, PROP_COUNT));
+        consumer.accept(prop.value());
+      }
+
+      // delimit the initial iteration phase
+      sleep(SLEEP_MILLIS);
     }
 
-    // delimit the initial iteration phase
-    sleep(SLEEP_MILLIS);
-
-    log("Scheduling Prop updates...");
-    String[] values = {DUMMY, DUMMY2};
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    scheduler.scheduleAtFixedRate(
-        () -> {
-          // randomly set props to one of the two values, effectively triggering updates
-          String upd = values[(int) (System.currentTimeMillis() % 2)];
-          for (int i = 0; i < PROP_COUNT; i++) {
-            resolver.set(key(i), upd);
-          }
-        },
-        0,
-        REFRESH_MILLIS,
-        TimeUnit.MILLISECONDS);
+    if (RUN_ASYNC) {
+      log("Scheduling Prop updates...");
+      String[] values = {DUMMY, DUMMY2};
+      scheduler.scheduleAtFixedRate(
+          () -> {
+            // randomly set props to one of the two values, effectively triggering updates
+            String upd = values[(int) (System.currentTimeMillis() % 2)];
+            for (int i = 0; i < PROP_COUNT; i++) {
+              resolver.set(keys[i], upd);
+            }
+          },
+          0,
+          REFRESH_MILLIS,
+          TimeUnit.MILLISECONDS);
 
-    // initialize PubSub
-    log(
-        String.format(
-            "Subscribing a consumer to all defined Prop objects and monitoring for %dms...",
-            3 * SLEEP_MILLIS));
-    allProps.forEach(p -> p.onUpdate(consumer, (e) -> {}));
+      // delimit the initial iteration phase
+      sleep(SLEEP_MILLIS);
 
-    // monitor the system for a while, then exit
-    sleep(3 * SLEEP_MILLIS);
+      // initialize PubSub
+      log(
+          String.format(
+              "Subscribing a consumer to all defined Prop objects and monitoring for %dms...",
+              3 * SLEEP_MILLIS));
+      allProps.forEach(p -> p.onUpdate(consumer, (e) -> {}));
+
+      // monitor the system for a while, then exit
+      sleep(3 * SLEEP_MILLIS);
+    }
 
     props.close();
     scheduler.shutdownNow();
@@ -130,9 +148,5 @@ public class PubSubMain {
   private static void sleep(long duration) throws InterruptedException {
     log(String.format("Sleeping for %ds...", duration));
     Thread.sleep(duration);
-  }
-
-  private static String key(int i) {
-    return String.format("key%s", i);
   }
 }

@@ -92,7 +92,7 @@ public class RefactoredProp<T1, T2> {
 
     try {
       // attempt to load the first property
-      result = prop1.value();
+      result = prop1.maybeValue();
 
       // if found
       if (result.isPresent()) {
@@ -107,7 +107,7 @@ public class RefactoredProp<T1, T2> {
     // otherwise, attempt to retrieve the second property
     try {
       // if a value is present
-      Optional<T2> oldValue = prop2.value();
+      Optional<T2> oldValue = prop2.maybeValue();
       if (oldValue.isPresent()) {
         // convert the old type to the new type and return it
         return Optional.of(converter.apply(oldValue.get()));

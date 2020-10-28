@@ -57,17 +57,17 @@ public class GenericBenchmarks {
   @Fork(value = 1, warmups = 1)
   public void readPropsUpdatedEachSecond(PropsState state, Blackhole blackhole) {
     state.stringProps.stream()
-        .map(Prop::value)
+        .map(Prop::maybeValue)
         .filter(Optional::isPresent)
         .forEach(blackhole::consume);
 
     state.longProps.stream()
-        .map(Prop::value)
+        .map(Prop::maybeValue)
         .filter(Optional::isPresent)
         .forEach(blackhole::consume);
 
     state.longListProps.stream()
-        .map(Prop::value)
+        .map(Prop::maybeValue)
         .filter(Optional::isPresent)
         .forEach(blackhole::consume);
   }

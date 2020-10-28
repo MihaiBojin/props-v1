@@ -21,7 +21,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import com.mihaibojin.props.core.annotations.Nullable;
-import com.mihaibojin.props.core.async.UpdateSubscriber;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.SubmissionPublisher;
@@ -128,14 +127,14 @@ public abstract class AbstractProp<T> implements Prop<T> {
    * @return an {@link Optional} representing the current value
    */
   @Override
-  public Optional<T> value() {
-    return Optional.ofNullable(rawValue());
+  public Optional<T> maybeValue() {
+    return Optional.ofNullable(value());
   }
 
   /** Returns the raw value of this prop. */
   @Override
   @Nullable
-  public T rawValue() {
+  public T value() {
     T value;
     if (nonNull(currentValue)) {
       value = currentValue;
@@ -164,7 +163,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   /** Registers value and error consumers, which are called every time the prop is updated. */
   @Override
   public void onUpdate(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
-    publisher().subscribe(new UpdateSubscriber<>(consumer, errConsumer));
+    publisher().subscribe(new OnUpdateSubscriber<>(consumer, errConsumer));
   }
 
   @Override

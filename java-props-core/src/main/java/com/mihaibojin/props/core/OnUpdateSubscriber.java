@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.mihaibojin.props.core.async;
+package com.mihaibojin.props.core;
+
+import static java.lang.String.format;
 
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
@@ -22,15 +24,16 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class UpdateSubscriber<T> implements Subscriber<T> {
-  private static final Logger log = Logger.getLogger(UpdateSubscriber.class.getName());
+/** {@link Subscriber} implementation for {@link Prop} updates. */
+public class OnUpdateSubscriber<T> implements Subscriber<T> {
+  private static final Logger log = Logger.getLogger(OnUpdateSubscriber.class.getName());
 
   private final Consumer<T> consumer;
   private final Consumer<Throwable> errConsumer;
   private Flow.Subscription subscription;
 
   @SuppressWarnings("NullAway")
-  public UpdateSubscriber(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
+  public OnUpdateSubscriber(Consumer<T> consumer, Consumer<Throwable> errConsumer) {
     this.consumer = consumer;
     this.errConsumer = errConsumer;
   }
@@ -54,6 +57,6 @@ public class UpdateSubscriber<T> implements Subscriber<T> {
 
   @Override
   public void onComplete() {
-    log.info("No more items.");
+    log.info(format("No more items in subscription %s", subscription.toString()));
   }
 }

@@ -65,7 +65,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(Duration.ofDays(1)));
   }
 
@@ -83,7 +83,7 @@ public class ExtendedTypesExamplesTest {
 
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(expectedValue));
   }
 
@@ -96,7 +96,7 @@ public class ExtendedTypesExamplesTest {
 
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(expectedValue));
   }
 
@@ -128,14 +128,14 @@ public class ExtendedTypesExamplesTest {
     Assertions.assertTimeout(
         Duration.ofSeconds(5),
         () -> {
-          while (Objects.equals(aProp.value().get(), "one")) {
+          while (Objects.equals(aProp.maybeValue().get(), "one")) {
             Thread.sleep(100);
           }
         });
 
     assertThat(
         "Finally, check that the value was correctly updated",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(updatedValue));
   }
 
@@ -147,7 +147,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(Path.of("/tmp")));
   }
 
@@ -159,7 +159,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(Path.of(System.getProperty("user.home"))));
   }
 
@@ -171,7 +171,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.value().get(),
+        aProp.maybeValue().get(),
         equalTo(Path.of("~/")));
   }
 
@@ -220,9 +220,7 @@ public class ExtendedTypesExamplesTest {
         "Expected the property to not be resolved", aProp.value().isPresent(), equalTo(false));
   }
 
-  /**
-   * Custom prop class that reads a numeric value in days.
-   */
+  /** Custom prop class that reads a numeric value in days. */
   private static class DaysProp extends AbstractNumericDurationProp {
 
     public DaysProp() {
@@ -235,11 +233,8 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * Customer prop class that encodes/decodes values in base64.
-   */
-  private static class Base64Prop extends AbstractProp<byte[]>
-      implements Converter<byte[]> {
+  /** Customer prop class that encodes/decodes values in base64. */
+  private static class Base64Prop extends AbstractProp<byte[]> implements Converter<byte[]> {
 
     private static final Charset CHARSET = Charset.defaultCharset();
 
@@ -248,7 +243,7 @@ public class ExtendedTypesExamplesTest {
     }
 
     public Base64Prop(String key) {
-      super(key, new byte[]{}, null, false, false);
+      super(key, new byte[] {}, null, false, false);
     }
 
     @Override
@@ -262,9 +257,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * Customer prop class that encodes/decodes values in base64.
-   */
+  /** Customer prop class that encodes/decodes values in base64. */
   private static class Base64PropWithValidation extends Base64Prop {
 
     public Base64PropWithValidation() {
@@ -291,9 +284,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * Customer prop class that encodes/decodes values in base64.
-   */
+  /** Customer prop class that encodes/decodes values in base64. */
   private static class Base64PropWithBadEncoder extends Base64Prop {
 
     public Base64PropWithBadEncoder() {
@@ -319,9 +310,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * Customer prop class that encodes/decodes values in base64.
-   */
+  /** Customer prop class that encodes/decodes values in base64. */
   private static class SimpleProp extends AbstractStringProp {
 
     protected SimpleProp(String key) {
@@ -337,9 +326,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * Custom prop class that reads a numeric value in days.
-   */
+  /** Custom prop class that reads a numeric value in days. */
   private static class PathProp extends AbstractPathProp {
 
     private final boolean expandHomeDir;
@@ -355,9 +342,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * A 'newer' prop of type Boolean.
-   */
+  /** A 'newer' prop of type Boolean. */
   private static class NewProp extends AbstractBooleanProp {
 
     protected NewProp(String key) {
@@ -365,9 +350,7 @@ public class ExtendedTypesExamplesTest {
     }
   }
 
-  /**
-   * An 'older' prop of type Integer.
-   */
+  /** An 'older' prop of type Integer. */
   private static class OldProp extends AbstractIntegerProp {
 
     protected OldProp(String key) {

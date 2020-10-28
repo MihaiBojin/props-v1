@@ -27,6 +27,7 @@ public interface Resolver {
   /**
    * Returns the value of the specified key, or <code>null</code> if the property is not defined.
    */
+  // TODO(mihaibojin): remove the use of Optional<> as it impacts performance in high-traffic apps
   Optional<String> get(String key);
 
   /**

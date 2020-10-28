@@ -32,5 +32,5 @@ java_binary(
         "//java-props-core/src/main:props-core",
         "@rules_jmh_maven//:org_openjdk_jmh_jmh_core",
     ],
-    #jvm_flags = ["-agentpath:/Applications/YourKit-Java-Profiler-2020.9.app/Contents/Resources/bin/mac/libyjpagent.dylib"],
+    # jvm_flags = ["-agentpath:/Applications/YourKit-Java-Profiler-2020.9.app/Contents/Resources/bin/mac/libyjpagent.dylib"],
 )

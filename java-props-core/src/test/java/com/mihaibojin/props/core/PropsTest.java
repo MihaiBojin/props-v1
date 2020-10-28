@@ -43,7 +43,7 @@ public class PropsTest {
             .build();
 
     // ACT
-    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().value().get();
+    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().maybeValue().get();
 
     // ASSERT
     assertThat(aValue, equalTo(1));
@@ -59,7 +59,7 @@ public class PropsTest {
             .build();
 
     // ACT
-    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().value().get();
+    Integer aValue = props.prop("prop.id", Cast.asInteger()).build().maybeValue().get();
 
     // ASSERT
     assertThat(aValue, equalTo(2));
@@ -80,7 +80,7 @@ public class PropsTest {
             .prop("prop.id", Cast.asInteger())
             .resolver("/propfiles/config1.properties")
             .build()
-            .value()
+            .maybeValue()
             .get();
 
     // ASSERT
@@ -124,8 +124,8 @@ public class PropsTest {
             .build();
 
     // ACT
-    String aValue1 = props.prop("a.string1").build().value().get();
-    String aValue2 = props.prop("a.string2").build().value().get();
+    String aValue1 = props.prop("a.string1").build().maybeValue().get();
+    String aValue2 = props.prop("a.string2").build().maybeValue().get();
 
     // ASSERT
     assertThat(aValue1, equalTo("one"));
