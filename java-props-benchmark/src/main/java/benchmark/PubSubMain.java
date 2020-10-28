@@ -49,7 +49,8 @@ public class PubSubMain {
   /** Main entry point. */
   public static void main(String[] args) throws InterruptedException {
     log(
-        "Waiting for the JVM to finish loading classes and allowing the user to attach profilers...");
+        "Waiting for the JVM to finish loading classes and allowing the user to attach"
+            + " profilers...");
     sleep(2 * SLEEP_MILLIS);
 
     log("Initializing the environment...");
@@ -76,7 +77,8 @@ public class PubSubMain {
     // initialize a blackhole to avoid JIT from optimizing the unused prop value
     Blackhole blackhole =
         new Blackhole(
-            "Today's password is swordfish. I understand instantiating Blackholes directly is dangerous.");
+            "Today's password is swordfish. I understand instantiating Blackholes directly is"
+                + " dangerous.");
     Consumer<String> consumer = blackhole::consume;
 
     // delimit the environment init phase
