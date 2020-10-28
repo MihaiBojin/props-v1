@@ -50,6 +50,24 @@ This target runs in the pre-commit git hook which is automatically installed whe
 All Bazel build files are formatted with [buildifier](https://github.com/bazelbuild/buildtools/buildifier).
 
 
+## Debugging
+
+Certain targets such as `PubSubMain` cannot be debugged directly from IntelliJ.
+For such targets, edit the run configuration and add `--debug=5005` to `Executable flags`, then
+connect with another `Remote` configuration.
+
+## Profiling
+
+Profiling a Bazel target with tools such as [YourKit](https://www.yourkit.com/) does not directly 
+work. Instead, find the corresponding Bazel target and pass any JVM arguments, e.g.:
+```
+java_binary(
+    ...
+    jvm_flags = ["-agentpath:/Applications/YourKit-Java-Profiler-2020.9.app/Contents/Resources/bin/mac/libyjpagent.dylib"],
+)
+```
+
+
 # Contributing
 
 - Please [create a GitHub issue](https://github.com/MihaiBojin/props/issues/new)

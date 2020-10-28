@@ -51,7 +51,7 @@ public class UpdatesSubscriberExamplesTest {
 
     // initialize consumer
     final int elements = 10;
-    ArrayDeque<Object> data = new ArrayDeque<>(elements);
+    ArrayDeque<String> data = new ArrayDeque<>(elements);
     Consumer<String> consumer = data::add;
 
     StringProp prop = spy(new StringProp(KEY));

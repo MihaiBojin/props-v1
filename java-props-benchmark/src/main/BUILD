@@ -23,3 +23,14 @@ java_format(
     set_exit_if_changed = False,
     tags = ["no-ide"],
 )
+
+java_binary(
+    name = "PubSubMain",
+    srcs = glob(["java/**/*.java"]),
+    resources = glob(["resources/**"]),
+    deps = [
+        "//java-props-core/src/main:props-core",
+        "@rules_jmh_maven//:org_openjdk_jmh_jmh_core",
+    ],
+    #jvm_flags = ["-agentpath:/Applications/YourKit-Java-Profiler-2020.9.app/Contents/Resources/bin/mac/libyjpagent.dylib"],
+)
