@@ -19,6 +19,7 @@ package examples;
 import static java.util.Objects.isNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.spy;
 
 import com.mihaibojin.props.core.AbstractProp;
@@ -65,7 +66,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
+        aProp.value(),
         equalTo(Duration.ofDays(1)));
   }
 
@@ -82,9 +83,7 @@ public class ExtendedTypesExamplesTest {
         equalTo(expectedValue));
 
     assertThat(
-        "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
-        equalTo(expectedValue));
+        "Expected to read and correctly cast the property", aProp.value(), equalTo(expectedValue));
   }
 
   @Test
@@ -95,9 +94,7 @@ public class ExtendedTypesExamplesTest {
     byte[] expectedValue = {123};
 
     assertThat(
-        "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
-        equalTo(expectedValue));
+        "Expected to read and correctly cast the property", aProp.value(), equalTo(expectedValue));
   }
 
   @Test
@@ -128,14 +125,14 @@ public class ExtendedTypesExamplesTest {
     Assertions.assertTimeout(
         Duration.ofSeconds(5),
         () -> {
-          while (Objects.equals(aProp.maybeValue().get(), "one")) {
+          while (Objects.equals(aProp.value(), "one")) {
             Thread.sleep(100);
           }
         });
 
     assertThat(
         "Finally, check that the value was correctly updated",
-        aProp.maybeValue().get(),
+        aProp.value(),
         equalTo(updatedValue));
   }
 
@@ -147,7 +144,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
+        aProp.value(),
         equalTo(Path.of("/tmp")));
   }
 
@@ -159,7 +156,7 @@ public class ExtendedTypesExamplesTest {
     // assert that the value is retrieved
     assertThat(
         "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
+        aProp.value(),
         equalTo(Path.of(System.getProperty("user.home"))));
   }
 
@@ -170,9 +167,7 @@ public class ExtendedTypesExamplesTest {
 
     // assert that the value is retrieved
     assertThat(
-        "Expected to read and correctly cast the property",
-        aProp.maybeValue().get(),
-        equalTo(Path.of("~/")));
+        "Expected to read and correctly cast the property", aProp.value(), equalTo(Path.of("~/")));
   }
 
   @Test
@@ -184,8 +179,7 @@ public class ExtendedTypesExamplesTest {
             props, new NewProp("a.new.prop"), new OldProp("an.old.prop"), value -> value != 0);
 
     // assert that the value is retrieved
-    assertThat(
-        "Expected to read and correctly cast the property", aProp.value().get(), equalTo(false));
+    assertThat("Expected to read and correctly cast the property", aProp.value(), equalTo(false));
   }
 
   @Test
@@ -200,8 +194,7 @@ public class ExtendedTypesExamplesTest {
             value -> value != 0);
 
     // assert that the value is retrieved
-    assertThat(
-        "Expected to read and correctly cast the property", aProp.value().get(), equalTo(true));
+    assertThat("Expected to read and correctly cast the property", aProp.value(), equalTo(true));
   }
 
   @Test
@@ -216,8 +209,7 @@ public class ExtendedTypesExamplesTest {
             value -> value != 0);
 
     // assert that the value is retrieved
-    assertThat(
-        "Expected the property to not be resolved", aProp.value().isPresent(), equalTo(false));
+    assertThat("Expected the property to not be resolved", aProp.value(), nullValue());
   }
 
   /** Custom prop class that reads a numeric value in days. */

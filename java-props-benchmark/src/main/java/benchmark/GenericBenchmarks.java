@@ -30,7 +30,7 @@ import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,18 +57,15 @@ public class GenericBenchmarks {
   @Fork(value = 1, warmups = 1)
   public void readPropsUpdatedEachSecond(PropsState state, Blackhole blackhole) {
     state.stringProps.stream()
-        .map(Prop::maybeValue)
-        .filter(Optional::isPresent)
+        .map(Prop::value)
+        .filter(Objects::nonNull)
         .forEach(blackhole::consume);
 
-    state.longProps.stream()
-        .map(Prop::maybeValue)
-        .filter(Optional::isPresent)
-        .forEach(blackhole::consume);
+    state.longProps.stream().map(Prop::value).filter(Objects::nonNull).forEach(blackhole::consume);
 
     state.longListProps.stream()
-        .map(Prop::maybeValue)
-        .filter(Optional::isPresent)
+        .map(Prop::value)
+        .filter(Objects::nonNull)
         .forEach(blackhole::consume);
   }
 
