@@ -16,14 +16,15 @@
 
 package com.mihaibojin.props.core.resolvers;
 
-import java.util.Optional;
+import com.mihaibojin.props.core.annotations.Nullable;
 
 /** Loads values defined in the environment. */
 public class EnvResolver extends ReadOnlyResolver {
 
   @Override
-  public Optional<String> get(String key) {
-    return Optional.ofNullable(System.getenv(key));
+  @Nullable
+  public String get(String key) {
+    return System.getenv(key);
   }
 
   @Override

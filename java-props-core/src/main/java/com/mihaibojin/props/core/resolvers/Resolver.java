@@ -16,7 +16,7 @@
 
 package com.mihaibojin.props.core.resolvers;
 
-import java.util.Optional;
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.Set;
 
 public interface Resolver {
@@ -27,8 +27,8 @@ public interface Resolver {
   /**
    * Returns the value of the specified key, or <code>null</code> if the property is not defined.
    */
-  // TODO(mihaibojin): remove the use of Optional<> as it impacts performance in high-traffic apps
-  Optional<String> get(String key);
+  @Nullable
+  String get(String key);
 
   /**
    * Reloads all properties managed by the implementing Resolver.

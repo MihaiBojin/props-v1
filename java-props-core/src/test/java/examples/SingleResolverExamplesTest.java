@@ -27,7 +27,6 @@ import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.SystemPropertyResolver;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -52,12 +51,12 @@ public class SingleResolverExamplesTest {
     Props props = Props.factory().withResolver(new PropertyFileResolver(propFile)).build();
 
     // initialize an Integer prop and read its value once
-    Optional<String> maybeValue = props.prop(propKey).readOnce();
+    String maybeValue = props.prop(propKey).readOnce();
 
     // assert that the value is retrieved
     assertThat(
         "Expecting the property's value to be successfully retrieved",
-        maybeValue.orElse(null),
+        maybeValue,
         equalTo("a_value"));
   }
 
@@ -70,13 +69,10 @@ public class SingleResolverExamplesTest {
             .build();
 
     // initialize a String prop and read its value once
-    Optional<String> maybeValue = props.prop("file.encoding").readOnce();
+    String maybeValue = props.prop("file.encoding").readOnce();
 
     // assert that the value is retrieved
-    assertThat(
-        "Expected to read the property from the classpath",
-        maybeValue.orElse(null),
-        equalTo("UPDATED"));
+    assertThat("Expected to read the property from the classpath", maybeValue, equalTo("UPDATED"));
   }
 
   @Test
@@ -85,10 +81,10 @@ public class SingleResolverExamplesTest {
     Props props = Props.factory().withResolver(new EnvResolver()).build();
 
     // initialize a String prop and read its value once
-    Optional<String> maybeValue = props.prop("PATH").readOnce();
+    String maybeValue = props.prop("PATH").readOnce();
 
     // assert that the value is retrieved
-    assertThat("Expected to find PATH in the environment", maybeValue.orElse(null), notNullValue());
+    assertThat("Expected to find PATH in the environment", maybeValue, notNullValue());
   }
 
   @Test
@@ -97,12 +93,12 @@ public class SingleResolverExamplesTest {
     Props props = Props.factory().withResolver(new SystemPropertyResolver()).build();
 
     // initialize a String prop and read its value once
-    Optional<String> maybeValue = props.prop("file.encoding").readOnce();
+    String maybeValue = props.prop("file.encoding").readOnce();
 
     // assert that the value is retrieved
     assertThat(
         "Expected to find a 'file.encoding' defined in the System Properties",
-        maybeValue.isPresent(),
-        equalTo(true));
+        maybeValue,
+        notNullValue());
   }
 }

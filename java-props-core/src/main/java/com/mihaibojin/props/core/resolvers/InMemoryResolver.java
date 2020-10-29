@@ -16,8 +16,8 @@
 
 package com.mihaibojin.props.core.resolvers;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,8 +37,9 @@ public class InMemoryResolver implements Resolver {
   }
 
   @Override
-  public Optional<String> get(String key) {
-    return Optional.ofNullable(store.get(key));
+  @Nullable
+  public String get(String key) {
+    return store.get(key);
   }
 
   @Override

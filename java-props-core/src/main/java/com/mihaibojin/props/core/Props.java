@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -181,7 +180,7 @@ public class Props implements AutoCloseable {
     // determine if the prop is linked to a specific resolver
     String resolverId = propIdToResolver.get(prop.key());
     // resolve the Props' updated value
-    T updatedValue = resolveProp(prop, resolverId).orElse(null);
+    T updatedValue = resolveProp(prop, resolverId);
 
     // if the value has changed
     if (!Objects.equals(currentValue, updatedValue)) {
@@ -195,7 +194,8 @@ public class Props implements AutoCloseable {
   }
 
   /** Search all resolvers for a value. */
-  <T> Optional<T> resolveProp(Prop<T> prop, @Nullable String resolverId) {
+  @Nullable
+  <T> T resolveProp(Prop<T> prop, @Nullable String resolverId) {
     return resolveByKey(prop.key(), prop, resolverId);
   }
 
@@ -204,27 +204,37 @@ public class Props implements AutoCloseable {
    *
    * <p>If a <code>resolverId</code> is specified, only search the matching resolver.
    */
-  <T> Optional<T> resolveByKey(String key, Converter<T> converter, @Nullable String resolverId) {
+  @Nullable
+  <T> T resolveByKey(String key, Converter<T> converter, @Nullable String resolverId) {
     if (!waitForInitialLoad()) {
-      return Optional.empty();
+      return null;
     }
 
     if (nonNull(resolverId)) {
       // if the prop is bound to a single resolver, return it on the spot
-      return Optional.ofNullable(resolvers.get(resolverId))
-          .flatMap(resolver -> resolver.get(key).map(converter::decode));
+      Resolver resolver = resolvers.get(resolverId);
+      if (isNull(resolver)) {
+        return null;
+      }
+
+      String val = resolver.get(key);
+      if (isNull(val)) {
+        return null;
+      }
+
+      return converter.decode(val);
     }
 
     for (String id : prioritizedResolvers) {
       // search each resolver, in priority order
       Resolver resolver = resolvers.get(id);
-      if (resolver == null) {
+      if (isNull(resolver)) {
         continue;
       }
 
       // find the appropriate value, if it exists
-      Optional<String> value = resolver.get(key);
-      if (value.isEmpty()) {
+      String value = resolver.get(key);
+      if (isNull(value)) {
         continue;
       }
 
@@ -238,10 +248,10 @@ public class Props implements AutoCloseable {
       // the reason for lazy decoding is to reduce confusion in a potential stacktrace
       // since the problem would be related to decoding the retrieved string and not with
       // resolving the value
-      return value.map(converter::decode);
+      return converter.decode(value);
     }
 
-    return Optional.empty();
+    return null;
   }
 
   /**
@@ -271,9 +281,9 @@ public class Props implements AutoCloseable {
 
     // process all layers and transform them into the final type
     for (Entry<String, Resolver> entry : resolvers.entrySet()) {
-      Optional<String> value = entry.getValue().get(prop.key());
-      if (value.isPresent()) {
-        T resolved = prop.decode(value.get());
+      String value = entry.getValue().get(prop.key());
+      if (!isNull(value)) {
+        T resolved = prop.decode(value);
         layers.put(entry.getKey(), resolved);
       }
     }
@@ -498,12 +508,16 @@ public class Props implements AutoCloseable {
      *
      * @throws ValidationException if a required prop does not have a value or a default
      */
-    public Optional<T> readOnce() {
-      Optional<T> result =
-          resolveByKey(key, converter, resolverId).or(() -> Optional.ofNullable(defaultValue));
+    @Nullable
+    public T readOnce() {
+      T result = resolveByKey(key, converter, resolverId);
+      if (isNull(result)) {
+        // return the default value, if a key was not found
+        result = defaultValue;
+      }
 
       // if the Prop is required, a value must be available
-      if (isRequired && result.isEmpty()) {
+      if (isRequired && isNull(result)) {
         throw new ValidationException(
             format("Prop '%s' is required, but neither a value or a default were specified", key));
       }

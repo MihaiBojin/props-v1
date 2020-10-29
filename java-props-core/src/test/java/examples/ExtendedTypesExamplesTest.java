@@ -25,6 +25,7 @@ import static org.mockito.Mockito.spy;
 import com.mihaibojin.props.core.AbstractProp;
 import com.mihaibojin.props.core.Props;
 import com.mihaibojin.props.core.RefactoredProp;
+import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.Converter;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.InMemoryResolver;
@@ -258,7 +259,7 @@ public class ExtendedTypesExamplesTest {
     }
 
     @Override
-    protected void validateBeforeSet(byte[] value) {
+    protected void validateBeforeSet(@Nullable byte[] value) {
       super.validateBeforeSet(value);
 
       // ensure the input is valid
@@ -291,7 +292,7 @@ public class ExtendedTypesExamplesTest {
     }
 
     @Override
-    protected void validateBeforeSet(byte[] value) {
+    protected void validateBeforeSet(@Nullable byte[] value) {
       // custom validation logic
       // this should fail because of the bad encode() method above
       if (!Arrays.equals(value, decode(encode(value)))) {

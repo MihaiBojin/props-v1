@@ -24,6 +24,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import com.mihaibojin.props.core.Props;
+import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.resolvers.InMemoryResolver;
 import com.mihaibojin.props.core.types.AbstractStringProp;
 import java.time.Duration;
@@ -84,7 +85,7 @@ public class UpdatesSubscriberExamplesTest {
     }
 
     @Override
-    protected void validateBeforeSet(String value) {
+    protected void validateBeforeSet(@Nullable String value) {
       super.validateBeforeSet(value);
     }
 

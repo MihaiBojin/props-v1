@@ -20,7 +20,6 @@ import static java.util.Objects.nonNull;
 import static java.util.logging.Level.FINE;
 
 import com.mihaibojin.props.core.annotations.Nullable;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -79,9 +78,8 @@ public class RefactoredProp<T1, T2> {
   /**
    * This method attempts the following actions.
    * <li>If the first property has a value it is returned
-   * <li>next, it tries to load the second property's value
-   * <li>finally, the class returns an empty {@link Optional} of type <code>T1</code> or it throws
-   *     an exception
+   * <li>next, it tries to load the second property's value and return it
+   * <li>otherwise, the class returns <code>null</code> or it throws an exception
    *
    * @throws ValidationException if a value could not be loaded from either of the two {@link Props}
    *     and validation failed at least once

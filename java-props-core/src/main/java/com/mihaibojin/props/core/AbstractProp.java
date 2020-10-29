@@ -63,7 +63,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
    *
    * @throws ValidationException when validation fails
    */
-  protected void validateBeforeSet(T value) {}
+  protected void validateBeforeSet(@Nullable T value) {}
 
   /**
    * This method validates the property's value before returning it.
@@ -83,7 +83,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   }
 
   /** Update this property's value. */
-  void setValue(T updateValue) {
+  void setValue(@Nullable T updateValue) {
     // ensure the value is validated before it is set
     try {
       validateBeforeSet(updateValue);

@@ -27,7 +27,6 @@ import com.mihaibojin.props.core.ValidationException;
 import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.types.AbstractStringProp;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,9 +73,9 @@ public class PropMetadataExamplesTest {
   @Test
   void readDefaultOnlyOnce() {
     // attempt to read a prop's value or return the defined default
-    Optional<String> maybeValue = props.prop("undefined.prop").defaultValue("DEFAULT").readOnce();
+    String maybeValue = props.prop("undefined.prop").defaultValue("DEFAULT").readOnce();
 
-    assertThat("Expecting the default value to be returned", maybeValue.get(), equalTo("DEFAULT"));
+    assertThat("Expecting the default value to be returned", maybeValue, equalTo("DEFAULT"));
   }
 
   @Test

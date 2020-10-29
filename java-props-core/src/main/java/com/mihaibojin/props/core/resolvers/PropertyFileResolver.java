@@ -19,13 +19,13 @@ package com.mihaibojin.props.core.resolvers;
 import static java.lang.String.format;
 import static java.util.logging.Level.SEVERE;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -53,8 +53,9 @@ public class PropertyFileResolver implements Resolver {
   }
 
   @Override
-  public Optional<String> get(String key) {
-    return Optional.ofNullable(store.get(key));
+  @Nullable
+  public String get(String key) {
+    return store.get(key);
   }
 
   @Override

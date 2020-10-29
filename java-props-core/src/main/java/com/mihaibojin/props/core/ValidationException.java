@@ -18,7 +18,7 @@ package com.mihaibojin.props.core;
 
 /**
  * Exception class thrown by {@link AbstractProp#validateBeforeSet(Object)} and {@link
- * AbstractProp#validateBeforeGet()}.
+ * AbstractProp#validateBeforeGet(Object)} ()}.
  */
 public class ValidationException extends RuntimeException {
 

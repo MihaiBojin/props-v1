@@ -18,6 +18,7 @@ package examples;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 
 import com.mihaibojin.props.core.Props;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
@@ -26,7 +27,6 @@ import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.SystemPropertyResolver;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -57,13 +57,13 @@ public class ResolverPrecedenceExamplesTest {
             .build();
 
     // initialize an Integer prop and read its value once
-    Optional<String> maybeValue = props.prop("file.encoding").readOnce();
+    String value = props.prop("file.encoding").readOnce();
 
     // assert that the value is dictated by the Resolver with the highest priority
     // (last to be defined)
     assertThat(
         "Expected to find a 'file.encoding' set by the classpath resolver",
-        maybeValue.orElse(null),
+        value,
         equalTo("CLASSPATH"));
   }
 
@@ -81,7 +81,7 @@ public class ResolverPrecedenceExamplesTest {
             .build();
 
     // initialize an Integer prop and read its value once
-    Optional<String> maybeValue =
+    String maybeValue =
         props
             .prop("file.encoding")
             // values can be retrieved from a specific resolver, by id
@@ -90,9 +90,7 @@ public class ResolverPrecedenceExamplesTest {
 
     // assert that the value is retrieved
     assertThat(
-        "Expected to find a 'file.encoding' set by the file resolver",
-        maybeValue.orElse(null),
-        equalTo("FILE"));
+        "Expected to find a 'file.encoding' set by the file resolver", maybeValue, equalTo("FILE"));
   }
 
   @Test
@@ -108,13 +106,10 @@ public class ResolverPrecedenceExamplesTest {
             .build();
 
     // initialize an Integer prop and read its value once
-    Optional<String> maybeValue = props.prop("a_key_which_does_not_exist").readOnce();
+    String maybeValue = props.prop("a_key_which_does_not_exist").readOnce();
 
     // assert that the value is dictated by the Resolver with the highest priority
     // (last to be defined)
-    assertThat(
-        "Expected to not find a value for a key which is not set",
-        maybeValue.isEmpty(),
-        equalTo(true));
+    assertThat("Expected to not find a value for a key which is not set", maybeValue, nullValue());
   }
 }
