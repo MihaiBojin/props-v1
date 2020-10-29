@@ -17,13 +17,21 @@
 package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseNumber;
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.isNull;
+
+import com.mihaibojin.props.core.annotations.Nullable;
 
 /** Converter that casts the inputted {@link String} to an {@link Float} value. */
 public interface FloatConverter extends Converter<Float> {
 
   @Override
+  @Nullable
   default Float decode(String value) {
-    return requireNonNull(safeParseNumber(value)).floatValue();
+    Number number = safeParseNumber(value);
+    if (isNull(number)) {
+      return null;
+    }
+
+    return number.floatValue();
   }
 }

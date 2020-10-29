@@ -52,7 +52,7 @@ from the system properties.
 ```java
 Prop<String> aProp = props.prop("file.encoding").build();
 
-Optional<String> encoding = aProp.value(); // will return an encoding such as UTF-8
+String encoding = aProp.value(); // will return an encoding such as UTF-8
 ```
 
 Read more to see other features.
@@ -101,17 +101,14 @@ The following examples assume you have already configured a `Props` registry.
 For example, you can load an `integer` property's value, without registering a prop with the registry:
 
 ```java
-Optional<Integer> maybeValue = 
-  props.prop("prop.key", Cast.asInteger()).readOnce();
+Integer maybeValue = props.prop("prop.key", Cast.asInteger()).readOnce();
 ```
 
 Or if you need to retrieve its value more than once, you can `bind` it to the registry as follows: 
 
 ```java
-Prop<Integer> aProp = 
-  props.prop("prop.key", Cast.asInteger()).build();
-Optional<Integer> maybeValue = 
-  aProp.value(); // will return the current value, at calling time
+Prop<Integer> aProp = props.prop("prop.key", Cast.asInteger()).build();
+Integer maybeValue = aProp.value(); // will return the current value, at calling time
 ```
 
 
@@ -127,8 +124,7 @@ Props props =
         .withResolver(new PropertyFileResolver(...)) // prop.key="two"
         .build();
 
-Optional<String> maybeValue = 
-  props.prop("prop.key").readOnce(); // will return "two"
+String maybeValue = props.prop("prop.key").readOnce(); // will return "two"
 ```
 
 
@@ -175,16 +171,14 @@ Props props =
         .withResolver(new PropertyFileResolver(...)) // prop.key="two"
         .build();
 
-Optional<String> maybeValue = 
-  props.prop("prop.key").resolver("MY-ID").readOnce(); // will return "one"
+String maybeValue = props.prop("prop.key").resolver("MY-ID").readOnce(); // will return "one"
 ```
 
 ## No value found
 
 If no value can be found for the specified property, `Prop.value()` will return `null`.
 ```java
-Optional<String> maybeValue = 
-  props.prop("unknown.prop").readOnce(); // will return an empty Optional
+String maybeValue = props.prop("unknown.prop").readOnce(); // will return null
 ```
 
 ## Further examples

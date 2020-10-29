@@ -17,13 +17,21 @@
 package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseNumber;
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.isNull;
+
+import com.mihaibojin.props.core.annotations.Nullable;
 
 /** Converter that casts the inputted {@link String} to an {@link Integer} value. */
 public interface IntegerConverter extends Converter<Integer> {
 
   @Override
+  @Nullable
   default Integer decode(String value) {
-    return requireNonNull(safeParseNumber(value)).intValue();
+    Number number = safeParseNumber(value);
+    if (isNull(number)) {
+      return null;
+    }
+
+    return number.intValue();
   }
 }

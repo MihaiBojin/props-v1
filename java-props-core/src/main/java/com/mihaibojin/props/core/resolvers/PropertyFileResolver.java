@@ -68,7 +68,7 @@ public class PropertyFileResolver implements Resolver {
     try (InputStream stream = Files.newInputStream(location)) {
       return ResolverUtils.mergeMapsInPlace(store, ResolverUtils.loadPropertiesFromStream(stream));
 
-    } catch (IOException e) {
+    } catch (IOException | IllegalArgumentException e) {
       log.log(SEVERE, "Could not read configuration from " + location, e);
     }
 

@@ -16,6 +16,8 @@
 
 package com.mihaibojin.props.core.resolvers;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.logging.Level.SEVERE;
 
 import java.io.BufferedReader;
@@ -29,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -49,13 +50,18 @@ public class ResolverUtils {
    * Loads a {@link Properties} object from the passed {@link InputStream} and returns a {@link Map}
    * containing all key->value mappings.
    *
-   * @throws NullPointerException if a null <code>InputStream</code> was passed
+   * @throws IllegalArgumentException if a null <code>InputStream</code> was passed
    * @throws IOException if the <code>InputStream</code> cannot be read
    */
   public static Map<String, String> loadPropertiesFromStream(InputStream stream)
       throws IOException {
+    if (isNull(stream)) {
+      throw new IllegalArgumentException(
+          "loadPropertiesFromStream expects a non-null input stream");
+    }
+
     Properties properties = new Properties();
-    properties.load(Objects.requireNonNull(stream));
+    properties.load(stream);
     return readPropertiesToMap(properties);
   }
 
@@ -136,7 +142,10 @@ public class ResolverUtils {
       throw new IllegalArgumentException("Cannot read config line, syntax incorrect: " + line);
     }
 
-    String type = Optional.ofNullable(matcher.group("type")).map(String::toLowerCase).orElse(null);
+    String type = matcher.group("type");
+    if (nonNull(type)) {
+      type = type.toLowerCase();
+    }
     String path = matcher.group("path");
     boolean reload = Boolean.parseBoolean(matcher.group("reload"));
 

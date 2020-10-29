@@ -61,7 +61,7 @@ public class ClasspathPropertyFileResolver implements Resolver {
       }
 
       return ResolverUtils.mergeMapsInPlace(store, ResolverUtils.loadPropertiesFromStream(stream));
-    } catch (IOException e) {
+    } catch (IOException | IllegalArgumentException e) {
       log.log(Level.SEVERE, "Could not read properties from classpath: " + location, e);
     }
 

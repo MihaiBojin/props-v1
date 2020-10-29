@@ -17,19 +17,24 @@
 package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseNumber;
+import static java.util.Objects.isNull;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /** Converter that casts the inputted {@link String} to an {@link Duration} value. */
 public interface NumericDurationConverter extends Converter<Duration> {
 
   @Override
+  @Nullable
   default Duration decode(String value) {
-    return Optional.ofNullable(safeParseNumber(value))
-        .map(val -> Duration.of(val.longValue(), unit()))
-        .orElse(null);
+    Number number = safeParseNumber(value);
+    if (isNull(number)) {
+      return null;
+    }
+
+    return Duration.of(number.longValue(), unit());
   }
 
   /**

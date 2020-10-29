@@ -17,7 +17,6 @@
 package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.splitString;
-import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 
@@ -29,6 +28,6 @@ public interface ListOfStringConverter extends Converter<List<String>>, ListConv
 
   @Override
   default List<String> decode(String value) {
-    return splitString(requireNonNull(value), separator());
+    return splitString(value, separator());
   }
 }

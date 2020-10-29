@@ -18,14 +18,15 @@ package com.mihaibojin.props.core.converters;
 
 import static com.mihaibojin.props.core.converters.ConverterUtils.safeParseChronoUnit;
 
+import com.mihaibojin.props.core.annotations.Nullable;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /** Converter that casts the inputted {@link String} to an {@link ChronoUnit} value. */
 public interface ChronoUnitConverter extends Converter<ChronoUnit> {
 
   @Override
+  @Nullable
   default ChronoUnit decode(String value) {
-    return Optional.ofNullable(safeParseChronoUnit(value)).orElse(null);
+    return safeParseChronoUnit(value);
   }
 }
