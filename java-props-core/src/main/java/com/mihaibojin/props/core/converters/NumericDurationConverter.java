@@ -23,7 +23,7 @@ import com.mihaibojin.props.core.annotations.Nullable;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-/** Converter that casts the inputted {@link String} to an {@link Duration} value. */
+/** Converter that casts the input {@link Number} to an {@link Duration} value. */
 public interface NumericDurationConverter extends Converter<Duration> {
 
   @Override

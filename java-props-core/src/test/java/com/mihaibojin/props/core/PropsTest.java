@@ -25,9 +25,13 @@ import static org.mockito.Mockito.verify;
 
 import com.mihaibojin.props.core.Props.Factory;
 import com.mihaibojin.props.core.converters.Cast;
+import com.mihaibojin.props.core.converters.Converter;
+import com.mihaibojin.props.core.converters.DurationConverter;
 import com.mihaibojin.props.core.resolvers.ClasspathPropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.EnvResolver;
 import com.mihaibojin.props.core.resolvers.SystemPropertyResolver;
+import com.mihaibojin.props.core.types.AbstractStringProp;
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 public class PropsTest {
@@ -129,5 +133,73 @@ public class PropsTest {
     // ASSERT
     assertThat(aValue1, equalTo("one"));
     assertThat(aValue2, equalTo("two"));
+  }
+
+  @Test
+  void renderPropTemplate() {
+    // ARRANGE
+    Props props =
+        Props.factory()
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/template.properties"))
+            .build();
+
+    // ACT
+    String rendered = props.renderTemplate("prop.template", null);
+
+    // ASSERT
+    assertThat(rendered, equalTo("My name is Mihai and I try to sleep PT8H a night!"));
+  }
+
+  @Test
+  void renderPropTemplatePretty() {
+    // ARRANGE
+    Props props =
+        Props.factory()
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/template.properties"))
+            .build();
+
+    // bind a Prop which defines a custom toString() output
+    props.bind(new PrettyDuration("hours.sleep"));
+
+    // ACT
+    String rendered = props.renderTemplate("prop.template", null);
+
+    // ASSERT
+    assertThat(rendered, equalTo("My name is Mihai and I try to sleep 8H:0M:0S a night!"));
+  }
+
+  @Test
+  void renderPropTemplateWithNullValues() {
+    // ARRANGE
+    Props props =
+        Props.factory()
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/template.properties"))
+            .build();
+
+    // ACT
+    String rendered = props.renderTemplate("prop.template.with.nulls", null);
+
+    // ASSERT
+    assertThat(rendered, equalTo("null is null"));
+  }
+
+  /**
+   * Defines a custom decoder for the Duration, returning it as a String.
+   *
+   * <p>This method works and it pretty-prints the Duration property into a template, but has the
+   * negative side-effect that it binds this Prop implementation. If the user subsequently requires
+   * the actual {@link Duration}, their only choice is to use an unbounded prop ({@link
+   * Props#resolveByKey(String, Converter, String)}.
+   */
+  private static class PrettyDuration extends AbstractStringProp {
+    protected PrettyDuration(String key) {
+      super(key, null, null, false, false);
+    }
+
+    @Override
+    public String decode(String value) {
+      Duration d = new DurationConverter() {}.decode(value);
+      return String.format("%dH:%dM:%dS", d.toHoursPart(), d.toMinutesPart(), d.toSecondsPart());
+    }
   }
 }

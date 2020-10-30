@@ -24,6 +24,7 @@ import static java.util.logging.Level.SEVERE;
 import com.mihaibojin.props.core.annotations.Nullable;
 import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.converters.Converter;
+import com.mihaibojin.props.core.internal.TemplateStringUtils;
 import com.mihaibojin.props.core.resolvers.PropertyFileResolver;
 import com.mihaibojin.props.core.resolvers.Resolver;
 import java.time.Duration;
@@ -429,6 +430,45 @@ public class Props implements AutoCloseable {
 
       return props;
     }
+  }
+
+  /**
+   * Allows rendering templates which are made up of 0 to many tokens.
+   *
+   * <p>A token is an alphanumeric string (unicode chars, _, -, and .) enclosed in curly braces,
+   * e.g.: {token}.
+   *
+   * <p>When this method is called, {@link Props} will first load the template (which must be a
+   * String prop), identify all the tokens in the template, and subsequently populate every token
+   * with its current value (as observed by the specified <code>resolverId</code>).
+   *
+   * <p>All the tokens' values will be populated as strings ({@link Cast#asString()}).
+   */
+  @Nullable
+  public String renderTemplate(String key, String resolverId) {
+    String template = resolveByKey(key, Cast.asString(), resolverId);
+    if (isNull(template)) {
+      return null;
+    }
+
+    String processed = template;
+    Set<String> tokens = TemplateStringUtils.parseTokens(template);
+    for (String token : tokens) {
+      String value;
+
+      Prop<?> maybeProp = retrieveProp(token);
+      if (!isNull(maybeProp)) {
+        // if a Prop is already bound, use it to benefit from its toString() implementation
+        value = Objects.toString(maybeProp.value());
+      } else {
+        // otherwise just resolve on the spot
+        value = Objects.toString(resolveByKey(token, Cast.asString(), resolverId));
+      }
+
+      processed = processed.replace("{" + token + "}", value);
+    }
+
+    return processed;
   }
 
   /** Builder class for creating custom {@link Prop}s from the current {@link Props} registry. */
