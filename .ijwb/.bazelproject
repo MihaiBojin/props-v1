@@ -6,6 +6,9 @@ directories:
   docs
   release
   third-party
+  -com
+  -props-core
+  -lib
 
 test_sources:
   java-props-core/src/test

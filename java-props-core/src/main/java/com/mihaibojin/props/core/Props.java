@@ -51,7 +51,6 @@ public class Props implements AutoCloseable {
 
   private static final Logger log = Logger.getLogger(PropertyFileResolver.class.getName());
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-  // TODO(mihaibojin): boundProps is read-heavy, find a better data structure
   private final Map<String, Prop<?>> boundProps = new ConcurrentHashMap<>();
   private final Map<String, String> propIdToResolver = new ConcurrentHashMap<>();
   private final CountDownLatch latch = new CountDownLatch(1);
@@ -133,7 +132,6 @@ public class Props implements AutoCloseable {
       propIdToResolver.put(prop.key(), resolverId);
     }
 
-    // TODO(mihaibojin): lazy load, block on get
     update(prop);
 
     return prop;
@@ -226,7 +224,6 @@ public class Props implements AutoCloseable {
       return converter.decode(val);
     }
 
-    // TODO(mihaibojin): Refactor this implementation in favor of Resolver<->Prop ownership
     for (String id : prioritizedResolvers) {
       // search each resolver, in priority order
       Resolver resolver = resolvers.get(id);
@@ -300,7 +297,6 @@ public class Props implements AutoCloseable {
    */
   private <T> boolean waitForInitialLoad() {
     try {
-      // TODO: replace this with a lazy load
       latch.await(refreshInterval.toSeconds(), TimeUnit.SECONDS);
       return true;
 
@@ -313,9 +309,6 @@ public class Props implements AutoCloseable {
 
   /** Refreshes values from all the registered {@link Resolver}s. */
   private void refreshResolvers(Map<String, Resolver> resolvers) {
-    // TODO(mihaibojin): this implementation is very naive and results in 9% of extra allocations
-    //  in high traffic use-cases (many updates); replace the whole implementation with
-    //  something more performant
     Set<? extends Prop<?>> toUpdate =
         resolvers.entrySet().parallelStream()
             .filter(r -> r.getValue().isReloadable())
@@ -325,8 +318,6 @@ public class Props implements AutoCloseable {
             // before reading them
             .collect(Collectors.toSet());
 
-    // TODO(mihaibojin): in the future, this will be replace with a better mechanism that keeps
-    //  track of which resolver owns each prop
     toUpdate.forEach(this::update);
   }
 

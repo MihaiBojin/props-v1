@@ -1,3 +1,4 @@
+load("@rules_java//java:defs.bzl", "java_binary")
 load("@rules_jmh//:defs.bzl", "jmh_java_benchmarks")
 load("@com_github_mihaibojin_bazel_java_rules//google-java-format:rules.bzl", "java_format")
 

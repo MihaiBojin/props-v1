@@ -3,7 +3,6 @@ load("@com_github_mihaibojin_bazel_java_rules//nullaway:rules.bzl", "nullaway_pl
 load("@com_github_mihaibojin_bazel_java_rules//checkstyle:rules.bzl", "checkstyle")
 load("@com_github_mihaibojin_bazel_java_rules//google-java-format:rules.bzl", "java_format")
 load("@graknlabs_bazel_distribution//maven/templates:rules.bzl", "assemble_maven", "deploy_maven")
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//contributors:contributors.bzl", "contributors")
 
 java_library(

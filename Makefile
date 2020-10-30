@@ -9,6 +9,7 @@ else ifeq (Linux,$(KERNEL))
 else
 	OS_NAME=unsupported
 endif
+LIB=lib
 
 .DEFAULT_GOAL := build
 
@@ -34,7 +35,7 @@ test: jabba
 fmt:
 	@echo ""
 	@echo "==> Formatting Bazel build files..."
-	buildifier $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
+	$(LIB)/buildifier $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
 
 	@echo ""
 	@echo "==> Formatting JAVA files..."
@@ -48,10 +49,9 @@ fmtcheck:
 	bazelisk run //java-props-core/src/main:google-java-format-check
 	bazelisk run //java-props-benchmark/src/main:google-java-format-check
 
-#	TODO(mihaibojin): Re-enable once the segfault is fixed
-#	@echo ""
-#	@echo "==> Ensuring all Bazel build files are properly formatted..."
-#	buildifier --lint=warn $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
+	@echo ""
+	@echo "==> Ensuring all Bazel build files are properly formatted..."
+	$(LIB)/buildifier --lint=warn $(shell find . -type f \( -iname BUILD -or -iname BUILD.bazel \))
 
 .PHONY: benchmark
 benchmark:
@@ -81,7 +81,6 @@ ifeq (0.0.0,$(shell cat release/VERSION))
 endif
 	@echo ""
 	@echo "==> Assembling JAR artifacts for publishing to Maven Central..."
-# TODO(mihaibojin): Generate module-info.java from Bazel
 	cp java-props-core/src/main/java/module-info.template java-props-core/src/main/java/module-info.java
 	bazelisk build //java-props-core/src/main:assemble-maven
 
@@ -137,10 +136,19 @@ endif
 
 endif
 
-ifeq (, $(shell which buildifier))
+ifeq (,$(wildcard $(LIB)/buildifier))
 	@echo ""
 	@echo "==> Installing buildifier..."
-	go get github.com/bazelbuild/buildtools/buildifier
+	mkdir -p $(LIB)
+
+ifeq (Darwin,$(KERNEL))
+	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier.mac
+else ifeq (Linux,$(KERNEL))
+	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier $(LIB)/buildifier
+else
+	$(error Cannot install buildifier on $(KERNEL); please install manually!)
+endif
+	chmod a+rx $(LIB)/buildifier
 endif
 
 ifeq (,$(wildcard ~/.jabba/jabba.sh))
