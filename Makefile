@@ -144,7 +144,7 @@ ifeq (,$(wildcard $(LIB)/buildifier))
 ifeq (Darwin,$(KERNEL))
 	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier.mac
 else ifeq (Linux,$(KERNEL))
-	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier $(LIB)/buildifier
+	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier
 else
 	$(error Cannot install buildifier on $(KERNEL); please install manually!)
 endif
