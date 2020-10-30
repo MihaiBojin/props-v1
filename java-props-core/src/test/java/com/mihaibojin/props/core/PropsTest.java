@@ -19,11 +19,7 @@ package com.mihaibojin.props.core;
 import static com.mihaibojin.props.core.resolvers.ResolverUtils.readResolverConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
-import com.mihaibojin.props.core.Props.Factory;
 import com.mihaibojin.props.core.converters.Cast;
 import com.mihaibojin.props.core.converters.Converter;
 import com.mihaibojin.props.core.converters.DurationConverter;
@@ -88,30 +84,6 @@ public class PropsTest {
 
     // ASSERT
     assertThat(aValue, equalTo(1));
-  }
-
-  @Test
-  void shutdownHookIsRegistered() {
-    // ARRANGE
-    Factory factory = spy(Props.factory());
-
-    // ACT
-    Props props = factory.withResolver(new EnvResolver()).registerShutdownHook(true).build();
-
-    // ASSERT
-    verify(factory).registerShutdownHook(props);
-  }
-
-  @Test
-  void shutdownHookIsNotRegistered() {
-    // ARRANGE
-    Factory factory = spy(Props.factory());
-
-    // ACT
-    Props props = factory.withResolver(new EnvResolver()).registerShutdownHook(false).build();
-
-    // ASSERT
-    verify(factory, never()).registerShutdownHook(props);
   }
 
   @Test

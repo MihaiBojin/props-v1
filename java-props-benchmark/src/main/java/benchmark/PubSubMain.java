@@ -57,7 +57,7 @@ public class PubSubMain {
     log(
         "Waiting for the JVM to finish loading classes and allowing the user to attach"
             + " profilers...");
-    sleep(2 * SLEEP_MILLIS);
+    sleep(SLEEP_MILLIS);
 
     log("Initializing the environment...");
 
@@ -138,7 +138,6 @@ public class PubSubMain {
       sleep(3 * SLEEP_MILLIS);
     }
 
-    props.close();
     scheduler.shutdownNow();
     log("Done.");
     sleep(SLEEP_MILLIS);

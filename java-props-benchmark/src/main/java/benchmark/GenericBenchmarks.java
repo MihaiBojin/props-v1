@@ -154,7 +154,6 @@ public class GenericBenchmarks {
     @TearDown
     public void teardown() {
       executor.shutdownNow();
-      props.close();
     }
   }
 }

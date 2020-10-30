@@ -30,7 +30,6 @@ import com.mihaibojin.props.core.types.AbstractStringProp;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.function.Consumer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -72,11 +71,6 @@ public class UpdatesSubscriberExamplesTest {
         "The last update matches the expected value",
         data.getLast(),
         equalTo("value" + (elements - 1)));
-  }
-
-  @AfterEach
-  void tearDown() {
-    props.close();
   }
 
   private class StringProp extends AbstractStringProp {

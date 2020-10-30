@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -47,10 +46,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Props implements AutoCloseable {
+public class Props {
 
   private static final Logger log = Logger.getLogger(PropertyFileResolver.class.getName());
-  private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+  private final ScheduledExecutorService executor;
   private final Map<String, Prop<?>> boundProps = new ConcurrentHashMap<>();
   private final Map<String, String> propIdToResolver = new ConcurrentHashMap<>();
   private final CountDownLatch latch = new CountDownLatch(1);
@@ -74,13 +73,28 @@ public class Props implements AutoCloseable {
     this.refreshInterval = refreshInterval;
     this.shutdownGracePeriod = shutdownGracePeriod;
 
-    // ensure all resolvers (including the one which cannot refresh) have their values loaded
-    CompletableFuture.runAsync(
+    // create an executor with Daemon threads, allowing the executor to shutdown when all
+    // non-daemon threads exit
+    // this executor will only be used for refreshing resolvers, and as such a single
+    // thread should ever be run at the same time
+    executor =
+        Executors.newScheduledThreadPool(
+            1,
+            runnable -> {
+              Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+              thread.setDaemon(true);
+              return thread;
+            });
+
+    // register a shutdown hook, allowing the executor to gracefully shutdown
+    Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+
+    // perform an initial load, ensuring that all resolvers have values
+    executor.submit(
         () -> {
           this.resolvers.entrySet().parallelStream().forEach(Props::safeReload);
           latch.countDown();
-        },
-        executor);
+        });
 
     // and schedule a period refresh operation
     executor.scheduleAtFixedRate(
@@ -321,12 +335,9 @@ public class Props implements AutoCloseable {
     toUpdate.forEach(this::update);
   }
 
-  /**
-   * Call this method when shutting down the app to stop this class's {@link
-   * ScheduledExecutorService}.
-   */
-  @Override
-  public void close() {
+  /** Gracefully terminate this class's {@link ScheduledExecutorService}. */
+  private void shutdown() {
+    log.info("Shutting down the Props executor...");
     executor.shutdown();
     try {
       executor.awaitTermination(shutdownGracePeriod.toSeconds(), TimeUnit.SECONDS);
@@ -352,8 +363,7 @@ public class Props implements AutoCloseable {
 
     private final LinkedHashMap<String, Resolver> resolvers = new LinkedHashMap<>();
     private Duration refreshInterval = Duration.ofSeconds(30);
-    private Duration shutdownGracePeriod = Duration.ofSeconds(30);
-    private boolean shouldRegisterShutdownHook = true;
+    private Duration shutdownGracePeriod = Duration.ofSeconds(10);
 
     private Factory() {}
 
@@ -387,22 +397,6 @@ public class Props implements AutoCloseable {
     }
 
     /**
-     * Specifies if a shutdown hook which terminates the executor should be automatically registered
-     * by calling {@link Runtime#addShutdownHook(Thread)}.
-     *
-     * @param shouldRegister true (default) if a shutdown hook should be registered
-     */
-    public Factory registerShutdownHook(boolean shouldRegister) {
-      shouldRegisterShutdownHook = shouldRegister;
-      return this;
-    }
-
-    /** Registers a shutdown hook. */
-    void registerShutdownHook(Props props) {
-      Runtime.getRuntime().addShutdownHook(new Thread(props::close));
-    }
-
-    /**
      * Creates the {@link Props} object.
      *
      * @throws IllegalStateException if the method is called without registering any {@link
@@ -414,10 +408,6 @@ public class Props implements AutoCloseable {
       }
 
       Props props = new Props(resolvers, refreshInterval, shutdownGracePeriod);
-
-      if (shouldRegisterShutdownHook) {
-        registerShutdownHook(props);
-      }
 
       return props;
     }
