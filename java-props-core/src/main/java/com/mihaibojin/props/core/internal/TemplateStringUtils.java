@@ -77,23 +77,4 @@ public class TemplateStringUtils {
   private static boolean isIdentifierChar(char c) {
     return Character.isLetterOrDigit(c) || c == '_' || c == '.' || c == '-';
   }
-
-  /** Helper class for storing token metadata. */
-  public static class Token {
-    public final String name;
-    public final int atIndex;
-    public final int length;
-
-    /** Class constructor. */
-    public Token(String name, int atIndex, int length) {
-      this.name = name;
-      this.atIndex = atIndex;
-      this.length = length;
-    }
-
-    @Override
-    public String toString() {
-      return name;
-    }
-  }
 }

@@ -183,6 +183,26 @@ public class PropsTest {
     assertThat(rendered, equalTo("null is null"));
   }
 
+  @Test
+  void renderPropTemplateFromResolver() {
+    // ARRANGE
+    Props props =
+        Props.factory()
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/template1.properties"))
+            .withResolver(new ClasspathPropertyFileResolver("/propfiles/template2.properties"))
+            .build();
+
+    // ACT
+    String anyResolver = props.renderTemplate("prop.template", "/propfiles/template2.properties");
+    String someKeys = props.renderTemplate("prop.template", "/propfiles/template1.properties");
+    String allKeys = props.renderTemplate("prop.template", "/propfiles/template2.properties");
+
+    // ASSERT
+    assertThat(anyResolver, equalTo("My name is Mihai and my age is 999"));
+    assertThat(someKeys, equalTo("My name is Mihai and my age is null"));
+    assertThat(allKeys, equalTo("My name is Mihai and my age is 999"));
+  }
+
   /**
    * Defines a custom decoder for the Duration, returning it as a String.
    *
