@@ -64,7 +64,8 @@ public abstract class AbstractProp<T> implements Prop<T> {
    *
    * @throws ValidationException when validation fails
    */
-  //  deepcode ignore EmptyMethodInAbstractClassShouldBeAbstract: intentionally empty; support advanced validations
+  //  deepcode ignore EmptyMethodInAbstractClassShouldBeAbstract: intentionally empty; support
+  // advanced validations
   protected void validateBeforeSet(@Nullable T value) {}
 
   /**
