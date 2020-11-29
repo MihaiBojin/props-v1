@@ -18,17 +18,17 @@ GITHASH := $(shell git log -n1 --pretty='%H')
 VERSION_TAG := $(shell git describe --exact-match --tags "$(GITHASH)" 2>/dev/null)
 
 .PHONY: clean
-clean: jabba
+clean:
 	@echo "==> Cleaning project artifacts and metadata"
-	bazelisk clean
 	rm -rf com/ module-info.class docs/javadoc
+	bazelisk clean
 
 .PHONY: build
-build: jabba
+build: check_sdkman
 	@echo "==> Building $(PKGNAME)"
 	bazelisk build //java-props-core/...
 
-test: jabba
+test: check_sdkman
 	bazelisk test //java-props-core/...
 
 .PHONY: fmt
@@ -75,7 +75,7 @@ endif
 	echo "$(VERSION_TAG:v%=%)" > release/VERSION
 
 .PHONY: assemble-maven
-assemble-maven: jabba
+assemble-maven: check_sdkman
 ifeq (0.0.0,$(shell cat release/VERSION))
 	$(error "Before running this target, make sure to generate a VERSION file with the _generate-pom-version_ target")
 endif
@@ -151,17 +151,10 @@ endif
 	chmod a+rx $(LIB)/buildifier
 endif
 
-ifeq (,$(wildcard ~/.jabba/jabba.sh))
+.PHONY: check_sdkman
+check_sdkman:
+ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
 	@echo ""
-	@echo "==> Installing jabba..."
-	curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
-	@echo ""
-	@echo "Don't forget to: source ~/.jabba/jabba.sh"
-	@echo ""
+	@echo "==> This project uses SDKman for managing JAVA version..."
+	$(error Please ensure SDKman is installed and sourced before continuing!)
 endif
-
-.PHONY: jabba
-jabba:
-	@echo "==> This project uses jabba for selecting a JAVA version"
-	@echo "==> Before running this command, run:"
-	@echo "source ~/.jabba/jabba.sh && jabba use"

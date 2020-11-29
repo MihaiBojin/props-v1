@@ -111,7 +111,7 @@ public class Props {
     try {
       return res.getValue().reload();
     } catch (Throwable t) {
-      log.log(SEVERE, t, () -> "Unexpected error reloading props from " + res.getKey());
+      log.log(SEVERE, t, () -> format("Unexpected error reloading props from %s", res.getKey()));
     }
     return Set.of();
   }
