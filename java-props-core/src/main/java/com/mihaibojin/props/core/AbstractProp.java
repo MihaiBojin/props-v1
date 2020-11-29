@@ -32,6 +32,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   @Nullable private final String description;
   private final boolean isRequired;
   private final boolean isSecret;
+  //  deepcode ignore AvoidUsingVolatile: support high-concurrency scenarios
   @Nullable private volatile T currentValue;
 
   /**
@@ -63,6 +64,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
    *
    * @throws ValidationException when validation fails
    */
+  //  deepcode ignore EmptyMethodInAbstractClassShouldBeAbstract: intentionally empty; support advanced validations
   protected void validateBeforeSet(@Nullable T value) {}
 
   /**
@@ -92,9 +94,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
       throw e;
     }
 
-    synchronized (this) {
-      currentValue = updateValue;
-    }
+    currentValue = updateValue;
 
     publisher().submit(updateValue);
   }
@@ -102,9 +102,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   /** Retrieve this property's value. */
   @Nullable
   T getValueInternal() {
-    synchronized (this) {
-      return currentValue;
-    }
+    return currentValue;
   }
 
   /** Retrieve this Prop's effective value or <code>null</code>. */

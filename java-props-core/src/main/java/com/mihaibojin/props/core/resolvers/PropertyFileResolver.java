@@ -69,6 +69,7 @@ public class PropertyFileResolver implements Resolver {
       return ResolverUtils.mergeMapsInPlace(store, ResolverUtils.loadPropertiesFromStream(stream));
 
     } catch (IOException | IllegalArgumentException e) {
+      //  deepcode ignore GuardLogStatement: SEVERE is the highest log level
       log.log(SEVERE, "Could not read configuration from " + location, e);
     }
 

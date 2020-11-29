@@ -235,6 +235,7 @@ public class Props {
         return null;
       }
 
+      //  deepcode ignore AvoidBranchingStatementAsLastInLoop: improved logic readability
       return converter.decode(val);
     }
 

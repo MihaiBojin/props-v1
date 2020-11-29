@@ -28,9 +28,11 @@ public class Helpers {
     Properties properties = new Properties();
     properties.setProperty(key, value);
     try {
-      properties.store(new FileOutputStream(outputFile), "test prop file");
+      try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        properties.store(fos, "test prop file");
+      }
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new IllegalStateException(e);
     }
   }
 }

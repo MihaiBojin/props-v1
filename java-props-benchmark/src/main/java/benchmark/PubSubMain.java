@@ -144,7 +144,8 @@ public class PubSubMain {
   }
 
   private static void log(String s) {
-    System.out.println(String.format("%s: %s", formatter.format(Instant.now()), s));
+    //  deepcode ignore SystemPrintln: this is a benchmark class
+    System.out.printf("%s: %s%n", formatter.format(Instant.now()), s);
   }
 
   private static void sleep(long duration) throws InterruptedException {

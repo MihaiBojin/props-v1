@@ -17,6 +17,7 @@
 package com.mihaibojin.props.core;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.INFO;
 
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscriber;
@@ -57,6 +58,9 @@ public class OnUpdateSubscriber<T> implements Subscriber<T> {
 
   @Override
   public void onComplete() {
-    log.info(format("No more items in subscription %s", subscription.toString()));
+    if (log.isLoggable(INFO)) {
+      // file deepcode ignore LogLevelCheck~info: <please specify a reason of ignoring this>
+      log.info(format("No more items in subscription %s", subscription.toString()));
+    }
   }
 }
