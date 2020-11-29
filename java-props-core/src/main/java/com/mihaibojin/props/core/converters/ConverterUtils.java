@@ -50,7 +50,7 @@ class ConverterUtils {
     try {
       return NumberFormat.getInstance().parse(value);
     } catch (ParseException e) {
-      log.log(SEVERE, "Could not parse " + value + " to a number", e);
+      log.log(SEVERE, e, () -> "Could not parse " + value + " to a number");
       return null;
     }
   }
@@ -67,7 +67,7 @@ class ConverterUtils {
     try {
       return ChronoUnit.valueOf(value);
     } catch (IllegalArgumentException | NullPointerException e) {
-      log.log(SEVERE, "Could not parse " + value + " as a ChronoUnit", e);
+      log.log(SEVERE, e, () -> "Could not parse " + value + " as a ChronoUnit");
       return null;
     }
   }
@@ -84,7 +84,7 @@ class ConverterUtils {
     try {
       return Duration.parse(value);
     } catch (DateTimeParseException e) {
-      log.log(SEVERE, "Could not parse " + value + " as a valid Duration", e);
+      log.log(SEVERE, e, () -> "Could not parse " + value + " as a valid Duration");
       return null;
     }
   }
@@ -101,7 +101,7 @@ class ConverterUtils {
     try {
       return OffsetDateTime.parse(value).toInstant();
     } catch (DateTimeParseException e) {
-      log.log(SEVERE, "Could not parse " + value + " as a valid DateTime", e);
+      log.log(SEVERE, e, () -> "Could not parse " + value + " as a valid DateTime");
       return null;
     }
   }

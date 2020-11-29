@@ -124,7 +124,7 @@ public class ResolverUtils {
       return reader.lines().map(ResolverUtils::readConfigLine).collect(Collectors.toList());
 
     } catch (Exception e) {
-      log.log(SEVERE, "Could not read resolver configuration", e);
+      log.log(SEVERE, e, () -> "Could not read resolver configuration");
       return List.of();
     }
   }

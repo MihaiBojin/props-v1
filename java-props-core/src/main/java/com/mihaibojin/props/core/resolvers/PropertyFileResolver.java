@@ -17,6 +17,7 @@
 package com.mihaibojin.props.core.resolvers;
 
 import static java.lang.String.format;
+import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 
 import com.mihaibojin.props.core.annotations.Nullable;
@@ -61,7 +62,11 @@ public class PropertyFileResolver implements Resolver {
   @Override
   public Set<String> reload() {
     if (!Files.exists(location)) {
-      log.fine(format("Skipping %s; file not found at %s", getClass().getSimpleName(), location));
+      if (log.isLoggable(FINE)) {
+        log.fine(
+            () ->
+                format("Skipping %s; file not found at %s", getClass().getSimpleName(), location));
+      }
       return Set.of();
     }
 
@@ -69,8 +74,7 @@ public class PropertyFileResolver implements Resolver {
       return ResolverUtils.mergeMapsInPlace(store, ResolverUtils.loadPropertiesFromStream(stream));
 
     } catch (IOException | IllegalArgumentException e) {
-      //  deepcode ignore GuardLogStatement: SEVERE is the highest log level
-      log.log(SEVERE, "Could not read configuration from " + location, e);
+      log.log(SEVERE, e, () -> format("Could not read configuration from %s", location));
     }
 
     return Set.of();

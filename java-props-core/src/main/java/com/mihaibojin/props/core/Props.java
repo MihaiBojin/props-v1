@@ -19,6 +19,7 @@ package com.mihaibojin.props.core;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.SEVERE;
 
 import com.mihaibojin.props.core.annotations.Nullable;
@@ -42,7 +43,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -111,7 +111,7 @@ public class Props {
     try {
       return res.getValue().reload();
     } catch (Throwable t) {
-      log.log(SEVERE, "Unexpected error reloading props from " + res.getKey(), t);
+      log.log(SEVERE, t, () -> "Unexpected error reloading props from " + res.getKey());
     }
     return Set.of();
   }
@@ -254,8 +254,8 @@ public class Props {
 
       // the current method is hot (can be called many times) and the following optimization
       // avoids unnecessary object allocations due to calling String.format(...)
-      if (log.getLevel() == Level.FINER) {
-        log.log(Level.FINER, () -> format("%s resolved by %s", key, id));
+      if (log.isLoggable(FINER)) {
+        log.log(FINER, () -> format("%s resolved by %s", key, id));
       }
 
       // return an optional which decodes the value on get
@@ -316,7 +316,7 @@ public class Props {
       return true;
 
     } catch (InterruptedException e) {
-      log.log(SEVERE, "Could not resolve in time", e);
+      log.log(SEVERE, e, () -> "Could not resolve in time");
       Thread.currentThread().interrupt();
       return false;
     }
@@ -338,12 +338,12 @@ public class Props {
 
   /** Gracefully terminate this class's {@link ScheduledExecutorService}. */
   private void shutdown() {
-    log.info("Shutting down the Props executor...");
+    log.info(() -> "Shutting down the Props executor...");
     executor.shutdown();
     try {
       executor.awaitTermination(shutdownGracePeriod.toSeconds(), TimeUnit.SECONDS);
     } catch (InterruptedException e) {
-      log.warning("Interrupted while waiting for executor shutdown; terminating...");
+      log.warning(() -> "Interrupted while waiting for executor shutdown; terminating...");
       executor.shutdownNow();
       Thread.currentThread().interrupt();
     }

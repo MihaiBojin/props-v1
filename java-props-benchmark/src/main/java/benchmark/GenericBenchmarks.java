@@ -105,7 +105,7 @@ public class GenericBenchmarks {
         properties.store(fos, null);
 
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new IllegalStateException(e);
       }
 
       return properties;
@@ -117,7 +117,7 @@ public class GenericBenchmarks {
       try {
         propFile = File.createTempFile("jmh", "properties");
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new IllegalStateException(e);
       }
       generateRandomProperties(propFile, PROP_COUNT);
 

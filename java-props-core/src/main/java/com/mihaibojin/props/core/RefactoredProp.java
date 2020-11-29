@@ -114,7 +114,7 @@ public class RefactoredProp<T1, T2> {
 
     } catch (ValidationException secondException) {
       // if an error was encountered, log it
-      log.log(FINE, "The second property failed to be resolved", secondException);
+      log.log(FINE, secondException, () -> "The second property failed to be resolved");
 
       // attempt to throw the first exception (if one was present)
       // otherwise throw the current exception
