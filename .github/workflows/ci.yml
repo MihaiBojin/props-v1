@@ -16,6 +16,11 @@ jobs:
       - name: Installing dependencies
         run: make setup
 
+      - name: Activating JDK env
+        run: |
+          . ~/.sdkman/bin/sdkman-init.sh
+          sdk env
+
       - name: Check code formatting
         run: |
           make fmtcheck

@@ -24,11 +24,12 @@ clean:
 	bazelisk clean
 
 .PHONY: build
-build: check_sdkman
-	@echo "==> Building $(PKGNAME)"
+build: check
+	@echo "==> Building $(PKGNAME)..."
 	bazelisk build //java-props-core/...
 
-test: check_sdkman
+test: check
+	@echo "==> Running tests for $(PKGNAME)..."
 	bazelisk test //java-props-core/...
 
 .PHONY: fmt
@@ -111,6 +112,12 @@ javadoc:
 	rm -rf $(BASEDIR)/docs/javadoc
 	mv $(TMPDIR) $(BASEDIR)/docs/javadoc
 
+.PHONY: setup
+setup: git-hooks setup_sdkman setup_bazelisk setup_buildifier
+
+.PHONY: check
+check: check_sdkman check_bazelisk check_buildifier
+
 .PHONY: git-hooks
 git-hooks:
 	@echo ""
@@ -118,24 +125,51 @@ git-hooks:
 	find .git/hooks -type l -exec rm {} \;
 	find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
 
-.PHONY: setup
-setup: git-hooks
-ifeq (, $(shell which bazelisk))
+.PHONY: check_sdkman
+check_sdkman:
+ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
+	$(error "Please run 'make setup_sdkman'")
+endif
 
+.PHONY: check_bazelisk
+check_bazelisk:
+ifeq (, $(shell which bazelisk))
+	$(error "Please add '$(shell go env GOPATH)/bin' to your current PATH and run 'make setup_bazelisk'")
+endif
+
+.PHONY: check_buildifier
+check_buildifier:
+ifeq (,$(wildcard $(LIB)/buildifier))
+	$(error "Please run 'make setup_buildifier'")
+endif
+
+.PHONY: setup_sdkman
+setup_sdkman:
+ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
+	@echo
+	@echo "Installing SDKman..."
+	curl -s "https://get.sdkman.io?rcupdate=false" | bash
+	chmod a+x ~/.sdkman/bin/sdkman-init.sh
+	@echo
+	@echo "Downloading JDK..."
+	bash -c ". ~/.sdkman/bin/sdkman-init.sh && sdk install java"
+endif
+	@echo "SDKman installed or present."
+
+.PHONY: setup_bazelisk
+setup_bazelisk:
+ifeq (, $(shell which bazelisk))
 ifeq (, $(shell which go))
 	$(error "Bazelisk is not installed and golang is not available")
 endif
-
 	@echo ""
 	@echo "==> Installing bazelisk..."
 	go get github.com/bazelbuild/bazelisk
-
-ifeq (, $(shell which bazelisk))
-	$(error "Please add '$(shell go env GOPATH)/bin' to your current PATH")
 endif
+	@echo "Bazelisk installed or present."
 
-endif
-
+.PHONY: setup_buildifier
+setup_buildifier:
 ifeq (,$(wildcard $(LIB)/buildifier))
 	@echo ""
 	@echo "==> Installing buildifier..."
@@ -150,11 +184,4 @@ else
 endif
 	chmod a+rx $(LIB)/buildifier
 endif
-
-.PHONY: check_sdkman
-check_sdkman:
-ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
-	@echo ""
-	@echo "==> This project uses SDKman for managing JAVA version..."
-	$(error Please ensure SDKman is installed and sourced before continuing!)
-endif
+	@echo "Buildifier installed or present."

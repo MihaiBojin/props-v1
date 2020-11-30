@@ -8,6 +8,7 @@ While `props` is currently implemented in JAVA, additional languages are planned
 ![](https://github.com/MihaiBojin/props/workflows/Deploy%20to%20Maven%20Central/badge.svg)
 ![.github/workflows/ci.yml](https://github.com/MihaiBojin/props/workflows/.github/workflows/ci.yml/badge.svg?branch=master&event=push)
 [![javadoc](https://javadoc.io/badge2/com.mihaibojin.props/props-core/javadoc.svg)](https://javadoc.io/doc/com.mihaibojin.props/props-core)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/MihaiBojin/props)
 
 # Features
 

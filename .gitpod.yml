@@ -1,0 +1,10 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: make setup && make build
+
+vscode:
+  extensions:
+    - BazelBuild.vscode-bazel@0.4.0:CNqPe08EnThWfsQXBuinsQ==
+    - timonwong.shellcheck@0.12.1:xUC3REt9ILR+PvBe48d8Rw==
