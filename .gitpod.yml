@@ -2,8 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: make setup
-  - init: make build
+  - init: make setup && make build
 
 vscode:
   extensions:
