@@ -24,11 +24,12 @@ clean: jabba
 	rm -rf com/ module-info.class docs/javadoc
 
 .PHONY: build
-build: jabba
-	@echo "==> Building $(PKGNAME)"
+build: check_sdkman
+	@echo "==> Building $(PKGNAME)..."
 	bazelisk build //java-props-core/...
 
-test: jabba
+test: check_sdkman
+	@echo "==> Running tests for $(PKGNAME)..."
 	bazelisk test //java-props-core/...
 
 .PHONY: fmt
@@ -119,7 +120,31 @@ git-hooks:
 	find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
 
 .PHONY: setup
-setup: git-hooks
+setup: git-hooks install_sdkman install_bazelisk install_buildifier
+
+.PHONY: check_sdkman
+check_sdkman:
+ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
+	@echo ""
+	@echo "==> This project uses SDKman for managing JAVA version..."
+	$(error Please ensure SDKman is installed and sourced before continuing!)
+endif
+
+.PHONY: install_sdkman
+install_sdkman:
+ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
+	@echo
+	@echo "Installing SDKman..."
+	curl -s "https://get.sdkman.io?rcupdate=false" | bash
+	chmod a+x ~/.sdkman/bin/sdkman-init.sh
+	@echo
+	@echo "Downloading JDK..."
+	source ~/.sdkman/bin/sdkman-init.sh && sdk env
+endif
+	@echo "SDKman installed or present."
+
+.PHONY: install_bazelisk
+install_bazelisk:
 ifeq (, $(shell which bazelisk))
 
 ifeq (, $(shell which go))
@@ -135,7 +160,10 @@ ifeq (, $(shell which bazelisk))
 endif
 
 endif
+	@echo "Bazelisk installed or present."
 
+.PHONY: install_buildifier
+install_buildifier:
 ifeq (,$(wildcard $(LIB)/buildifier))
 	@echo ""
 	@echo "==> Installing buildifier..."
@@ -150,18 +178,4 @@ else
 endif
 	chmod a+rx $(LIB)/buildifier
 endif
-
-ifeq (,$(wildcard ~/.jabba/jabba.sh))
-	@echo ""
-	@echo "==> Installing jabba..."
-	curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
-	@echo ""
-	@echo "Don't forget to: source ~/.jabba/jabba.sh"
-	@echo ""
-endif
-
-.PHONY: jabba
-jabba:
-	@echo "==> This project uses jabba for selecting a JAVA version"
-	@echo "==> Before running this command, run:"
-	@echo "source ~/.jabba/jabba.sh && jabba use"
+	@echo "Buildifier installed or present."

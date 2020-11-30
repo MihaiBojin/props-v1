@@ -16,17 +16,9 @@ jobs:
       - name: Installing dependencies
         run: make setup
 
-      - name: Installing the JDK
+      - name: Running tests and static analysis targets
         run: |
+          source ~/.sdkman/bin/sdkman-init.sh
+          sdk env
           echo
-          echo "Installing the JDK..."
-          source ~/.jabba/jabba.sh
-          jabba install
-
-      - name: Run tests and static analysis targets
-        run: |
-          source ~/.jabba/jabba.sh
-          jabba use
-          echo
-          echo "Running the tests..."
           make fmtcheck vet test
