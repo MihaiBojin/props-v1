@@ -24,11 +24,11 @@ clean: jabba
 	rm -rf com/ module-info.class docs/javadoc
 
 .PHONY: build
-build: check_sdkman
+build: check
 	@echo "==> Building $(PKGNAME)..."
 	bazelisk build //java-props-core/...
 
-test: check_sdkman
+test: check
 	@echo "==> Running tests for $(PKGNAME)..."
 	bazelisk test //java-props-core/...
 
@@ -112,6 +112,12 @@ javadoc:
 	rm -rf $(BASEDIR)/docs/javadoc
 	mv $(TMPDIR) $(BASEDIR)/docs/javadoc
 
+.PHONY: setup
+setup: git-hooks install_sdkman install_bazelisk install_buildifier
+
+.PHONY: check
+check: check_sdkman check_bazelisk check_buildifier
+
 .PHONY: git-hooks
 git-hooks:
 	@echo ""
@@ -119,19 +125,26 @@ git-hooks:
 	find .git/hooks -type l -exec rm {} \;
 	find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
 
-.PHONY: setup
-setup: git-hooks install_sdkman install_bazelisk install_buildifier
-
 .PHONY: check_sdkman
 check_sdkman:
 ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
-	@echo ""
-	@echo "==> This project uses SDKman for managing JAVA version..."
-	$(error Please ensure SDKman is installed and sourced before continuing!)
+	$(error "Please run 'make setup_sdkman'")
 endif
 
-.PHONY: install_sdkman
-install_sdkman:
+.PHONY: check_bazelisk
+check_bazelisk:
+ifeq (, $(shell which bazelisk))
+	$(error "Please add '$(shell go env GOPATH)/bin' to your current PATH and run 'make setup_bazelisk'")
+endif
+
+.PHONY: check_buildifier
+check_buildifier:
+ifeq (,$(wildcard $(LIB)/buildifier))
+	$(error "Please run 'make setup_buildifier'")
+endif
+
+.PHONY: setup_sdkman
+setup_sdkman:
 ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
 	@echo
 	@echo "Installing SDKman..."
@@ -143,27 +156,20 @@ ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
 endif
 	@echo "SDKman installed or present."
 
-.PHONY: install_bazelisk
-install_bazelisk:
+.PHONY: setup_bazelisk
+setup_bazelisk:
 ifeq (, $(shell which bazelisk))
-
 ifeq (, $(shell which go))
 	$(error "Bazelisk is not installed and golang is not available")
 endif
-
 	@echo ""
 	@echo "==> Installing bazelisk..."
 	go get github.com/bazelbuild/bazelisk
-
-ifeq (, $(shell which bazelisk))
-	$(error "Please add '$(shell go env GOPATH)/bin' to your current PATH")
-endif
-
 endif
 	@echo "Bazelisk installed or present."
 
-.PHONY: install_buildifier
-install_buildifier:
+.PHONY: setup_buildifier
+setup_buildifier:
 ifeq (,$(wildcard $(LIB)/buildifier))
 	@echo ""
 	@echo "==> Installing buildifier..."
