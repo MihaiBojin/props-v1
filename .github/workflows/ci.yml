@@ -9,7 +9,7 @@ on:
 jobs:
   tests:
     name: Continuous Integration Tests
-    runs-on: adoptopenjdk:11.0.9.1_1-jdk-hotspot
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
