@@ -9,24 +9,21 @@ on:
 jobs:
   tests:
     name: Continuous Integration Tests
-    runs-on: ubuntu-20.04
+    runs-on: adoptopenjdk:11.0.9.1_1-jdk-hotspot
     steps:
       - uses: actions/checkout@v2
 
       - name: Installing dependencies
         run: make setup
 
-      - name: Installing the JDK
+      - name: Check code formatting
         run: |
-          echo
-          echo "Installing the JDK..."
-          source ~/.jabba/jabba.sh
-          jabba install
+          make fmtcheck
 
-      - name: Run tests and static analysis targets
+      - name: Run static analysis
         run: |
-          source ~/.jabba/jabba.sh
-          jabba use
-          echo
-          echo "Running the tests..."
-          make fmtcheck vet test
+          make vet
+
+      - name: Run tests
+        run: |
+          make test
