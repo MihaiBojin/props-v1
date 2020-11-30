@@ -139,7 +139,7 @@ ifeq (,$(wildcard ~/.sdkman/bin/sdkman-init.sh))
 	chmod a+x ~/.sdkman/bin/sdkman-init.sh
 	@echo
 	@echo "Downloading JDK..."
-	bash -c ". ~/.sdkman/bin/sdkman-init.sh && sdk env"
+	bash -c ". ~/.sdkman/bin/sdkman-init.sh && sdk install java"
 endif
 	@echo "SDKman installed or present."
 
