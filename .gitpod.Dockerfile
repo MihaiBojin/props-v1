@@ -15,5 +15,5 @@ RUN sudo apt-get update \
 RUN curl -s "https://get.sdkman.io?rcupdate=false" | bash
 RUN chmod a+x "$HOME/.sdkman/bin/sdkman-init.sh"
 
-# RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk env
+# Install the JDK
+RUN . "$HOME/.sdkman/bin/sdkman-init.sh" && sdk env
