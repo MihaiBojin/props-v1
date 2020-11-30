@@ -12,3 +12,5 @@ RUN sudo apt-get update \
     && sudo rm -rf /tmp/* \
     && sudo rm /bin/sh \
     && sudo ln -s /bin/bash /bin/sh
+
+ENV PATH="/workspace/go/bin:${PATH}"
