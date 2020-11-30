@@ -113,7 +113,7 @@ javadoc:
 	mv $(TMPDIR) $(BASEDIR)/docs/javadoc
 
 .PHONY: setup
-setup: git-hooks install_sdkman install_bazelisk install_buildifier
+setup: git-hooks setup_sdkman setup_bazelisk setup_buildifier
 
 .PHONY: check
 check: check_sdkman check_bazelisk check_buildifier
