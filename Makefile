@@ -1,4 +1,6 @@
-PKGNAME=props
+PKGNAME = props
+SHELL := /bin/bash
+BUILDIFIER_VERSION := 4.0.1
 
 # Determine the OS
 KERNEL=$(shell uname -s)
@@ -176,9 +178,9 @@ ifeq (,$(wildcard $(LIB)/buildifier))
 	mkdir -p $(LIB)
 
 ifeq (Darwin,$(KERNEL))
-	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier.mac
+	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/$(BUILDIFIER_VERSION)/buildifier.mac
 else ifeq (Linux,$(KERNEL))
-	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/3.5.0/buildifier
+	curl -sLo $(LIB)/buildifier https://github.com/bazelbuild/buildtools/releases/download/$(BUILDIFIER_VERSION)/buildifier
 else
 	$(error Cannot install buildifier on $(KERNEL); please install manually!)
 endif
