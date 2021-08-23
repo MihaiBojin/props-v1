@@ -3,6 +3,13 @@
   <component name="RunConfigurationProducerService">
     <option name="ignoredProducers">
       <set>
+        <option value="com.android.tools.idea.run.AndroidConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.instrumented.AndroidTestConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.junit.TestClassAndroidConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.junit.TestDirectoryAndroidConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.junit.TestMethodAndroidConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.junit.TestPackageAndroidConfigurationProducer" />
+        <option value="com.android.tools.idea.testartifacts.junit.TestPatternConfigurationProducer" />
         <option value="com.intellij.execution.application.ApplicationConfigurationProducer" />
         <option value="com.intellij.execution.junit.AbstractAllInDirectoryConfigurationProducer" />
         <option value="com.intellij.execution.junit.AllInDirectoryConfigurationProducer" />
