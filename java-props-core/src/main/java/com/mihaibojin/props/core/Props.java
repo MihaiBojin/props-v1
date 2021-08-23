@@ -66,7 +66,7 @@ public class Props {
     this.resolvers = Collections.unmodifiableMap(resolvers);
 
     // generate a list of resolver IDs, ordered by priority (highest first)
-    ArrayList<String> ids = new ArrayList<>(resolvers.keySet());
+    List<String> ids = new ArrayList<>(resolvers.keySet());
     Collections.reverse(ids);
     prioritizedResolvers = Collections.unmodifiableList(ids);
 

@@ -109,13 +109,7 @@ public abstract class AbstractProp<T> implements Prop<T> {
   @Override
   @Nullable
   public T value() {
-    T value;
-    if (nonNull(currentValue)) {
-      value = currentValue;
-    } else {
-      value = defaultValue;
-    }
-
+    final T value = nonNull(currentValue) ? currentValue : defaultValue;
     // ensure the Prop is in a valid state before returning it
     validateBeforeGet(value);
     return value;
