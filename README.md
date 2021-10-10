@@ -1,5 +1,9 @@
 # props
 
+**This project has now been archived in favor of <https://github.com/props-sh/props>**
+
+---
+
 This project aims to provide a library which manages properties and secrets coming from
 multiple sources (startup properties, environment, property files, etc.)
 
