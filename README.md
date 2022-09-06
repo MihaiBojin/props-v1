@@ -1,6 +1,6 @@
 # props
 
-**This project has now been archived in favor of <https://github.com/props-sh/props>**
+**This project has now been archived in favor of <https://github.com/MihaiBojin/java-props-v2>**
 
 ---
 
